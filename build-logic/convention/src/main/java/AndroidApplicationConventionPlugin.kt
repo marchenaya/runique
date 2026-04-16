@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.marchenaya.convention.ExtensionType
+import com.marchenaya.convention.configureBuildTypes
 import com.marchenaya.convention.configureKotlinAndroid
 import com.marchenaya.convention.libs
 import org.gradle.api.Plugin
@@ -31,6 +33,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
 
                 configureKotlinAndroid(this)
+
+                configureBuildTypes(
+                    commonExtension = this,
+                    extensionType = ExtensionType.APPLICATION
+                )
 
             }
         }
