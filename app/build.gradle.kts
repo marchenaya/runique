@@ -4,10 +4,6 @@ plugins {
 
 android {
     namespace = "com.marchenaya.runique"
-
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 }
 
 dependencies {
