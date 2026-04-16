@@ -15,6 +15,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         private const val PROJECT_VERSION_SDK = "projectTargetSdkVersion"
         private const val PROJECT_VERSION_CODE = "projectVersionCode"
         private const val PROJECT_VERSION_NAME = "projectVersionName"
+        private const val ANDROIDX_TEST_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     override fun apply(target: Project) {
@@ -30,6 +31,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
                     versionCode = libs.findVersion(PROJECT_VERSION_CODE).get().toString().toInt()
                     versionName = libs.findVersion(PROJECT_VERSION_NAME).get().toString()
+
+                    testInstrumentationRunner = ANDROIDX_TEST_RUNNER
                 }
 
                 configureKotlinAndroid(this)
