@@ -11,7 +11,7 @@ dependencies {
     compileOnly(libs.ksp.gradle.plugin)
     compileOnly(libs.room.gradle.plugin)
 }
-
+//TODO see if possible to put const and group them
 gradlePlugin {
     plugins {
         register("androidApplication") {
@@ -25,6 +25,10 @@ gradlePlugin {
         register("androidLibrary") {
             id = "runique.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
+        }
+        register("androidLibraryCompose") {
+            id = "runique.android.library.compose"
+            implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
     }
 }
