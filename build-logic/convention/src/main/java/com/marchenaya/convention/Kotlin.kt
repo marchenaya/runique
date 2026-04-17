@@ -14,6 +14,7 @@ private const val PROJECT_COMPILE_SDK = "projectCompileSdkVersion"
 private const val PROJECT_MIN_SDK = "projectMinSdkVersion"
 private const val CORE_LIBRARY_DESUGARING = "coreLibraryDesugaring"
 private const val DESUGAR_JDK_LIBS = "desugar.jdk.libs"
+private const val ANNOTATION_TARGET_FLAG = "-Xannotation-default-target=param-property"
 
 internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension
@@ -49,6 +50,7 @@ private fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.addAll(listOf(ANNOTATION_TARGET_FLAG))
         }
     }
 }
