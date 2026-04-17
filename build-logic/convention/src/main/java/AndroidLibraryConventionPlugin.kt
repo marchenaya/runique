@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.kotlin
 
+@Suppress("unused")
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     private companion object {
         private const val ANDROID_LIBRARY = "com.android.library"
