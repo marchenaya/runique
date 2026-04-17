@@ -3,6 +3,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("unused")
 class AndroidFeatureUiConventionPlugin : Plugin<Project> {
     private companion object {
         private const val RUNIQUE_ANDROID_LIBRARY_COMPOSE = "runique.android.library.compose"
