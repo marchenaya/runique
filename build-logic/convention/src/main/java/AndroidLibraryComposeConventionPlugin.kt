@@ -15,7 +15,7 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
         target.run {
             pluginManager.run {
                 apply(RUNIQUE_ANDROID_LIBRARY)
-                pluginManager.apply(ORG_JETBRAINS_KOTLIN_PLUGIN_COMPOSE)
+                apply(ORG_JETBRAINS_KOTLIN_PLUGIN_COMPOSE)
             }
 
             val extension = extensions.getByType<LibraryExtension>()

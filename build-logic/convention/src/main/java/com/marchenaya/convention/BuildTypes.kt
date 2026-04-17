@@ -12,7 +12,6 @@ import java.io.File
 private const val STRING = "String"
 private const val API_KEY = "API_KEY"
 private const val BASE_URL = "BASE_URL"
-private const val BASE_URL_VALUE = "https://runique.pl-coding.com:8080"
 private const val PROGUARD_RULES_PRO = "proguard-rules.pro"
 
 private const val PROGUARD_ANDROID_OPTIMIZE_TXT = "proguard-android-optimize.txt"
@@ -27,20 +26,22 @@ internal fun Project.configureBuildTypes(
     }
 
     val apiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty(API_KEY)
+    val baseUrlValue = gradleLocalProperties(rootDir, rootProject.providers).getProperty(BASE_URL)
 
     when (extensionType) {
         ExtensionType.APPLICATION -> {
             this@configureBuildTypes.extensions.configure<ApplicationExtension> {
                 buildTypes {
                     debug {
-                        configureDebugBuildType(apiKey)
+                        configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
                     }
                     release {
                         configureReleaseBuildType(
                             defaultProguardFile = getDefaultProguardFile(
                                 PROGUARD_ANDROID_OPTIMIZE_TXT
                             ),
-                            apiKey = apiKey
+                            apiKey = apiKey,
+                            baseUrlValue = baseUrlValue
                         )
                     }
                 }
@@ -51,14 +52,15 @@ internal fun Project.configureBuildTypes(
             this@configureBuildTypes.extensions.configure<LibraryExtension> {
                 buildTypes {
                     debug {
-                        configureDebugBuildType(apiKey)
+                        configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
                     }
                     release {
                         configureReleaseBuildType(
                             defaultProguardFile = getDefaultProguardFile(
                                 PROGUARD_ANDROID_OPTIMIZE_TXT
                             ),
-                            apiKey = apiKey
+                            apiKey = apiKey,
+                            baseUrlValue = baseUrlValue
                         )
                     }
                 }
@@ -67,17 +69,18 @@ internal fun Project.configureBuildTypes(
     }
 }
 
-private fun BuildType.configureDebugBuildType(apiKey: String) {
+private fun BuildType.configureDebugBuildType(apiKey: String, baseUrlValue: String) {
     buildConfigField(STRING, API_KEY, "\"$apiKey\"")
-    buildConfigField(STRING, BASE_URL, "\"$BASE_URL_VALUE\"")
+    buildConfigField(STRING, BASE_URL, "\"$baseUrlValue\"")
 }
 
 private fun BuildType.configureReleaseBuildType(
     defaultProguardFile: File,
-    apiKey: String
+    apiKey: String,
+    baseUrlValue: String
 ) {
     buildConfigField(STRING, API_KEY, "\"$apiKey\"")
-    buildConfigField(STRING, BASE_URL, "\"$BASE_URL_VALUE\"")
+    buildConfigField(STRING, BASE_URL, "\"$baseUrlValue\"")
 
     isMinifyEnabled = true
     proguardFiles(
