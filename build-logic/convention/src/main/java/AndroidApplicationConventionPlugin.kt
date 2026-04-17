@@ -8,6 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+@Suppress("unused")
 class AndroidApplicationConventionPlugin : Plugin<Project> {
 
     private companion object {
