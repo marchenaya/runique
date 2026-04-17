@@ -13,7 +13,6 @@ private const val STRING = "String"
 private const val API_KEY = "API_KEY"
 private const val BASE_URL = "BASE_URL"
 private const val PROGUARD_RULES_PRO = "proguard-rules.pro"
-
 private const val PROGUARD_ANDROID_OPTIMIZE_TXT = "proguard-android-optimize.txt"
 
 internal fun Project.configureBuildTypes(

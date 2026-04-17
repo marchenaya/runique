@@ -2,6 +2,7 @@ import com.marchenaya.convention.configureKotlinJvm
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+@Suppress("unused")
 class JvmLibraryConventionPlugin : Plugin<Project> {
     private companion object {
         private const val JVM = "org.jetbrains.kotlin.jvm"
