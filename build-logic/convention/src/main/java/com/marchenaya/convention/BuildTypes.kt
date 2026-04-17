@@ -29,7 +29,7 @@ internal fun Project.configureBuildTypes(
 
     when (extensionType) {
         ExtensionType.APPLICATION -> {
-            this@configureBuildTypes.extensions.configure<ApplicationExtension> {
+            extensions.configure<ApplicationExtension> {
                 buildTypes {
                     debug {
                         configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
@@ -48,7 +48,7 @@ internal fun Project.configureBuildTypes(
         }
 
         ExtensionType.LIBRARY -> {
-            this@configureBuildTypes.extensions.configure<LibraryExtension> {
+            extensions.configure<LibraryExtension> {
                 buildTypes {
                     debug {
                         configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
