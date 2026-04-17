@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.LibraryExtension
+import com.marchenaya.convention.Constants.ANDROIDX_TEST_RUNNER
 import com.marchenaya.convention.ExtensionType
 import com.marchenaya.convention.configureBuildTypes
 import com.marchenaya.convention.configureKotlinAndroid
@@ -10,17 +11,16 @@ import org.gradle.kotlin.dsl.kotlin
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     private companion object {
-        private const val COM_ANDROID_LIBRARY = "com.android.library"
+        private const val ANDROID_LIBRARY = "com.android.library"
         private const val TEST_IMPLEMENTATION = "testImplementation"
         private const val TEST = "test"
-        private const val ANDROIDX_TEST_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
         private const val CONSUMER_RULES_PRO = "consumer-rules.pro"
     }
 
     override fun apply(target: Project) {
         target.run {
             pluginManager.run {
-                apply(COM_ANDROID_LIBRARY)
+                apply(ANDROID_LIBRARY)
             }
 
             extensions.configure<LibraryExtension> {

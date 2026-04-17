@@ -1,4 +1,5 @@
 import androidx.room.gradle.RoomExtension
+import com.marchenaya.convention.Constants.IMPLEMENTATION
 import com.marchenaya.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -9,7 +10,6 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
     private companion object {
         private const val ANDROIDX_ROOM = "androidx.room"
         private const val KSP_PLUGIN = "com.google.devtools.ksp"
-        private const val IMPLEMENTATION = "implementation"
         private const val ROOM_RUNTIME = "room.runtime"
         private const val ROOM_KTX = "room.ktx"
         private const val KSP = "ksp"

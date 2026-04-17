@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.marchenaya.convention.Constants.ANDROIDX_TEST_RUNNER
 import com.marchenaya.convention.ExtensionType
 import com.marchenaya.convention.configureBuildTypes
 import com.marchenaya.convention.configureKotlinAndroid
@@ -15,7 +16,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         private const val PROJECT_VERSION_SDK = "projectTargetSdkVersion"
         private const val PROJECT_VERSION_CODE = "projectVersionCode"
         private const val PROJECT_VERSION_NAME = "projectVersionName"
-        private const val ANDROIDX_TEST_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     override fun apply(target: Project) {
