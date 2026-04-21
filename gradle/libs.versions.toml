@@ -20,7 +20,7 @@ materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.7"
 securityCryptoKtx = "1.1.0"
 timber = "5.0.1"
-ksp = "2.3.4"
+ksp = "2.3.6"
 room = "2.8.4"
 appcompat = "1.7.1"
 material = "1.13.0"
@@ -44,9 +44,9 @@ projectVersionName = "1.0"
 #noinspection UnusedVersionCatalogEntry
 projectMinSdkVersion = "24"
 #noinspection UnusedVersionCatalogEntry
-projectTargetSdkVersion = "36"
+projectTargetSdkVersion = "37"
 #noinspection UnusedVersionCatalogEntry
-projectCompileSdkVersion = "36"
+projectCompileSdkVersion = "37"
 #noinspection UnusedVersionCatalogEntry
 projectVersionCode = "1"
 
