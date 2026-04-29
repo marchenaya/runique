@@ -27,8 +27,7 @@ import com.marchenaya.core.presentation.designsystem.components.RuniqueOutlinedA
 @Composable
 fun IntroScreenRoot(
     onSignInClick: () -> Unit,
-    onSignUpClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onSignUpClick: () -> Unit
 ) {
     IntroScreen(
         onAction = { action ->
@@ -36,19 +35,15 @@ fun IntroScreenRoot(
                 IntroAction.OnSignInClick -> onSignInClick()
                 IntroAction.OnSignUpClick -> onSignUpClick()
             }
-        },
-        modifier = modifier
+        }
     )
 }
 
 @Composable
-fun IntroScreen(
-    onAction: (IntroAction) -> Unit,
-    modifier: Modifier = Modifier
+private fun IntroScreen(
+    onAction: (IntroAction) -> Unit
 ) {
-    GradientBackground(
-        modifier = modifier
-    ) {
+    GradientBackground {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,7 +93,9 @@ fun IntroScreen(
 }
 
 @Composable
-private fun RuniqueLogoVertical(modifier: Modifier = Modifier) {
+private fun RuniqueLogoVertical(
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
