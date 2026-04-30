@@ -5,11 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.marchenaya.core.presentation.designsystem.AnalyticsIcon
+import androidx.navigation.compose.rememberNavController
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,11 +17,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RuniqueTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Icon(
-                        imageVector = AnalyticsIcon,
-                        contentDescription = null,
-                        modifier = Modifier.padding(innerPadding)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    NavigationRoot(
+                        navController = navController
                     )
                 }
             }
