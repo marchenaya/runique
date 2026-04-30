@@ -29,6 +29,8 @@ dependencies {
     // Crypto
     implementation(libs.androidx.security.crypto.ktx)
 
+    implementation(libs.bundles.koin)
+
     api(libs.play.feature.delivery)
     api(libs.play.feature.delivery.ktx)
 
