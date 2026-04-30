@@ -16,32 +16,31 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "auth"
+        startDestination = Routes.Auth
     ) {
         authGraph(navController)
     }
 }
 
 private fun NavGraphBuilder.authGraph(navController: NavHostController) {
-    navigation(
-        startDestination = "intro",
-        route = "auth"
+    navigation<Routes.Auth>(
+        startDestination = Routes.Intro
     ) {
-        composable(route = "intro") {
+        composable<Routes.Intro> {
             IntroScreenRoot(
                 onSignInClick = {
-                    navController.navigate("register")
+                    navController.navigate(Routes.Register)
                 },
                 onSignUpClick = {
-                    navController.navigate("login")
+                    navController.navigate(Routes.Login)
                 }
             )
         }
-        composable(route = "register") {
+        composable<Routes.Register> {
             RegisterScreenRoot(
                 onSignInClick = {
-                    navController.navigate("login") {
-                        popUpTo("register") {
+                    navController.navigate(Routes.Login) {
+                        popUpTo(Routes.Register) {
                             inclusive = true
                             saveState = true
                         }
@@ -49,7 +48,7 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
                     }
                 },
                 onSuccessfulRegistration = {
-                    navController.navigate("login")
+                    navController.navigate(Routes.Login)
                 }
             )
         }
