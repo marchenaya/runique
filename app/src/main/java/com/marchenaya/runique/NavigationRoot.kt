@@ -1,56 +1,57 @@
 package com.marchenaya.runique
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.compose.runtime.remember
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import com.marchenaya.auth.presentation.intro.IntroScreenRoot
 import com.marchenaya.auth.presentation.register.RegisterScreenRoot
 
-//TODO : Migrate to last navigation
 @Composable
-fun NavigationRoot(
-    navController: NavHostController
-) {
-    NavHost(
-        navController = navController,
-        startDestination = Routes.Auth
-    ) {
-        authGraph(navController)
+fun NavigationRoot() {
+    val navigationState = rememberNavigationState(
+        startRoute = Routes.Intro,
+        topLevelRoutes = setOf(Routes.Intro)
+    )
+    val navigator = remember { Navigator(navigationState) }
+
+    val entryProvider = entryProvider {
+        authGraph(navigator)
     }
+
+    NavDisplay(
+        entries = navigationState.toEntries(entryProvider),
+        onBack = { navigator.goBack() }
+    )
 }
 
-private fun NavGraphBuilder.authGraph(navController: NavHostController) {
-    navigation<Routes.Auth>(
-        startDestination = Routes.Intro
-    ) {
-        composable<Routes.Intro> {
-            IntroScreenRoot(
-                onSignInClick = {
-                    navController.navigate(Routes.Register)
-                },
-                onSignUpClick = {
-                    navController.navigate(Routes.Login)
-                }
-            )
-        }
-        composable<Routes.Register> {
-            RegisterScreenRoot(
-                onSignInClick = {
-                    navController.navigate(Routes.Login) {
-                        popUpTo(Routes.Register) {
-                            inclusive = true
-                            saveState = true
-                        }
-                        restoreState = true
-                    }
-                },
-                onSuccessfulRegistration = {
-                    navController.navigate(Routes.Login)
-                }
-            )
-        }
+private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
+    entry<Routes.Intro> {
+        IntroScreenRoot(
+            onSignInClick = {
+                navigator.navigate(Routes.Login)
+            },
+            onSignUpClick = {
+                navigator.navigate(Routes.Register)
+            }
+        )
+    }
+    entry<Routes.Register> {
+        RegisterScreenRoot(
+            onSignInClick = {
+                navigator.navigate(
+                    route = Routes.Login,
+                    popUpTo = Routes.Register,
+                    inclusive = true,
+                    saveState = true,
+                    restoreState = true
+                )
+            },
+            onSuccessfulRegistration = {
+                navigator.navigate(Routes.Login)
+            }
+        )
     }
 }
