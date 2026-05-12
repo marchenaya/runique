@@ -1,5 +1,6 @@
 package com.marchenaya.runique
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.EntryProviderScope
@@ -53,5 +54,8 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
                 navigator.navigate(Routes.Login)
             }
         )
+    }
+    entry<Routes.Login> {
+        Text(text = "Login")
     }
 }
