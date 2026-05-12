@@ -19,7 +19,8 @@ private const val AUTH_MASTER_KEY_URI = "android-keystore://auth_master_key"
 private const val AUTH_INFO_FILE_NAME = "auth_info.json"
 
 class AuthInfoDataStore(
-    private val context: Context
+    private val context: Context,
+    private val authInfoSerializer: AuthInfoSerializer
 ) {
 
     fun create(): DataStore<AuthInfo?> {
@@ -38,7 +39,7 @@ class AuthInfoDataStore(
                     RegistryConfiguration.get(),
                     Aead::class.java,
                 ),
-            wrappedSerializer = AuthInfoSerializer,
+            wrappedSerializer = authInfoSerializer,
             associatedData = AUTH_INFO_FILE_NAME.encodeToByteArray(),
         )
 
