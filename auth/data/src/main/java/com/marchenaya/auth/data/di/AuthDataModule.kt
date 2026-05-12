@@ -10,9 +10,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val authDataModule = module {
-    single<PatternValidator> {
-        EmailPatternValidator
-    }
     singleOf(::UserDataValidator)
+    singleOf(::EmailPatternValidator).bind<PatternValidator>()
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
 }

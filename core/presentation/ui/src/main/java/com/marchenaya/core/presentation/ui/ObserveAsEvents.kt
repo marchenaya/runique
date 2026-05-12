@@ -5,15 +5,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.Dispatchers
+import com.marchenaya.core.domain.util.DispatcherProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.koin.compose.koinInject
 
 @Composable
 fun <T> ObserveAsEvents(
     flow: Flow<T>,
     key1: Any? = null,
     key2: Any? = null,
+    dispatcherProvider: DispatcherProvider = koinInject(),
     onEvent: (T) -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -21,7 +23,7 @@ fun <T> ObserveAsEvents(
         flow, lifecycleOwner.lifecycle, key1, key2
     ) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
+            withContext(dispatcherProvider.mainImmediate) {
                 flow.collect(onEvent)
             }
         }
