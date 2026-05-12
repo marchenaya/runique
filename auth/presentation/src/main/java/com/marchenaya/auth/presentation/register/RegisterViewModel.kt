@@ -81,16 +81,21 @@ class RegisterViewModel(
                 is Result.Error -> {
                     if (result.error == DataError.Network.CONFLICT) {
                         eventChannel.send(
-                            RegisterEvent.Error(
+                            RegisterEvent.ShowSnackbar(
                                 UiText.StringResource(R.string.error_email_exists)
                             )
                         )
                     } else {
-                        eventChannel.send(RegisterEvent.Error(result.error.asUiText()))
+                        eventChannel.send(RegisterEvent.ShowSnackbar(result.error.asUiText()))
                     }
                 }
 
                 is Result.Success -> {
+                    eventChannel.send(
+                        RegisterEvent.ShowSnackbar(
+                            UiText.StringResource(R.string.registration_successful)
+                        )
+                    )
                     eventChannel.send(RegisterEvent.RegistrationSuccess)
                 }
             }
