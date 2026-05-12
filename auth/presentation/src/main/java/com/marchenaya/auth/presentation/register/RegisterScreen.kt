@@ -4,6 +4,7 @@ package com.marchenaya.auth.presentation.register
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,10 +14,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -44,6 +52,8 @@ import com.marchenaya.core.presentation.designsystem.components.GradientBackgrou
 import com.marchenaya.core.presentation.designsystem.components.RuniqueActionButton
 import com.marchenaya.core.presentation.designsystem.components.RuniquePasswordTextField
 import com.marchenaya.core.presentation.designsystem.components.RuniqueTextField
+import com.marchenaya.core.presentation.ui.ObserveAsEvents
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,8 +62,30 @@ fun RegisterScreenRoot(
     onSuccessfulRegistration: () -> Unit,
     viewModel: RegisterViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is RegisterEvent.ShowSnackbar -> {
+                keyboardController?.hide()
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = event.message.asString(context)
+                    )
+                }
+            }
+
+            RegisterEvent.RegistrationSuccess -> {
+                onSuccessfulRegistration()
+            }
+        }
+    }
+
     RegisterScreen(
         state = viewModel.state,
+        snackbarHostState = snackbarHostState,
         onAction = viewModel::onAction
     )
 }
@@ -61,110 +93,118 @@ fun RegisterScreenRoot(
 @Composable
 private fun RegisterScreen(
     state: RegisterState,
+    snackbarHostState: SnackbarHostState,
     onAction: (RegisterAction) -> Unit
 ) {
-    GradientBackground {
-        Column(
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { padding ->
+        GradientBackground(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(vertical = 32.dp)
-                .padding(top = 16.dp)
+                .consumeWindowInsets(padding)
         ) {
-            Text(
-                text = stringResource(id = R.string.create_account),
-                style = MaterialTheme.typography.headlineMedium
-            )
-            val annotatedString = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        fontFamily = Poppins,
-                        color = RuniqueGray
-                    )
-                ) {
-                    append(stringResource(id = R.string.already_have_an_account) + " ")
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(vertical = 32.dp)
+                    .padding(top = 16.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.create_account),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                val annotatedString = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontFamily = Poppins,
+                            color = RuniqueGray
+                        )
+                    ) {
+                        append(stringResource(id = R.string.already_have_an_account) + " ")
 
-                    val loginLink = LinkAnnotation.Clickable(
-                        tag = "clickable_text",
-                        linkInteractionListener = {
-                            onAction(RegisterAction.OnLoginClick)
-                        }
-                    )
+                        val loginLink = LinkAnnotation.Clickable(
+                            tag = "clickable_text",
+                            linkInteractionListener = {
+                                onAction(RegisterAction.OnLoginClick)
+                            }
+                        )
 
-                    withLink(loginLink) {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontFamily = Poppins,
-                                textDecoration = TextDecoration.None
-                            )
-                        ) {
-                            append(stringResource(id = R.string.login))
+                        withLink(loginLink) {
+                            withStyle(
+                                style = SpanStyle(
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontFamily = Poppins,
+                                    textDecoration = TextDecoration.None
+                                )
+                            ) {
+                                append(stringResource(id = R.string.login))
+                            }
                         }
                     }
                 }
+                Text(text = annotatedString)
+                Spacer(modifier = Modifier.height(48.dp))
+                RuniqueTextField(
+                    state = state.email,
+                    startIcon = EmailIcon,
+                    endIcon = if (state.isEmailValid) {
+                        CheckIcon
+                    } else null,
+                    hint = stringResource(id = R.string.example_email),
+                    title = stringResource(id = R.string.email),
+                    modifier = Modifier.fillMaxWidth(),
+                    additionalInfo = stringResource(id = R.string.must_be_a_valid_email),
+                    keyboardType = KeyboardType.Email
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                RuniquePasswordTextField(
+                    state = state.password,
+                    isPasswordVisible = state.isPasswordVisible,
+                    onTogglePasswordVisibility = {
+                        onAction(RegisterAction.OnTogglePasswordVisibilityClick)
+                    },
+                    hint = stringResource(R.string.password),
+                    title = stringResource(R.string.password),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                PasswordRequirement(
+                    text = stringResource(
+                        R.string.at_least_x_characters,
+                        UserDataValidator.MIN_PASSWORD_LENGTH
+                    ),
+                    isValid = state.passwordValidationState.hasMinLength
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                PasswordRequirement(
+                    text = stringResource(R.string.at_least_one_number),
+                    isValid = state.passwordValidationState.hasNumber
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                PasswordRequirement(
+                    text = stringResource(R.string.contains_lowercase_char),
+                    isValid = state.passwordValidationState.hasLowerCaseCharacter
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                PasswordRequirement(
+                    text = stringResource(R.string.contains_uppercase_char),
+                    isValid = state.passwordValidationState.hasUpperCaseCharacter
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                RuniqueActionButton(
+                    text = stringResource(R.string.register),
+                    isLoading = state.isRegistering,
+                    enabled = state.canRegister,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onClick = {
+                        onAction(RegisterAction.OnRegisterClick)
+                    }
+                )
             }
-            Text(text = annotatedString)
-            Spacer(modifier = Modifier.height(48.dp))
-            RuniqueTextField(
-                state = state.email,
-                startIcon = EmailIcon,
-                endIcon = if (state.isEmailValid) {
-                    CheckIcon
-                } else null,
-                hint = stringResource(id = R.string.example_email),
-                title = stringResource(id = R.string.email),
-                modifier = Modifier.fillMaxWidth(),
-                additionalInfo = stringResource(id = R.string.must_be_a_valid_email),
-                keyboardType = KeyboardType.Email
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            RuniquePasswordTextField(
-                state = state.password,
-                isPasswordVisible = state.isPasswordVisible,
-                onTogglePasswordVisibility = {
-                    onAction(RegisterAction.OnTogglePasswordVisibilityClick)
-                },
-                hint = stringResource(R.string.password),
-                title = stringResource(R.string.password),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            PasswordRequirement(
-                text = stringResource(
-                    R.string.at_least_x_characters,
-                    UserDataValidator.MIN_PASSWORD_LENGTH
-                ),
-                isValid = state.passwordValidationState.hasMinLength
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            PasswordRequirement(
-                text = stringResource(R.string.at_least_one_number),
-                isValid = state.passwordValidationState.hasNumber
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            PasswordRequirement(
-                text = stringResource(R.string.contains_lowercase_char),
-                isValid = state.passwordValidationState.hasLowerCaseCharacter
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            PasswordRequirement(
-                text = stringResource(R.string.contains_uppercase_char),
-                isValid = state.passwordValidationState.hasUpperCaseCharacter
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            RuniqueActionButton(
-                text = stringResource(R.string.register),
-                isLoading = state.isRegistering,
-                enabled = state.canRegister,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    onAction(RegisterAction.OnRegisterClick)
-                }
-            )
         }
     }
 }
@@ -203,6 +243,7 @@ private fun RegisterScreenPreview() {
                     hasNumber = true
                 )
             ),
+            snackbarHostState = SnackbarHostState(),
             onAction = {}
         )
     }
