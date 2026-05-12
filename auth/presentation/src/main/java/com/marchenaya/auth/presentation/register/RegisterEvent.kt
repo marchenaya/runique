@@ -4,5 +4,5 @@ import com.marchenaya.core.presentation.ui.UiText
 
 sealed interface RegisterEvent {
     data object RegistrationSuccess : RegisterEvent
-    data class Error(val error: UiText) : RegisterEvent
+    data class ShowSnackbar(val message: UiText) : RegisterEvent
 }
