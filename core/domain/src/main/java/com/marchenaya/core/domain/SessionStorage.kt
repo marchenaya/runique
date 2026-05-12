@@ -1,6 +1,8 @@
 package com.marchenaya.core.domain
 
+import kotlinx.coroutines.flow.Flow
+
 interface SessionStorage {
-    suspend fun get(): AuthInfo?
-    suspend fun set(info: AuthInfo?)
+    fun observeAuthInfo(): Flow<AuthInfo?>
+    suspend fun set(newInfo: AuthInfo?)
 }
