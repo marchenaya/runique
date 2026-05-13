@@ -27,7 +27,7 @@ class AuthInfoSerializer(
 
     override suspend fun writeTo(t: AuthInfo?, output: OutputStream) {
         withContext(dispatcherProvider.io) {
-            val json = Json.encodeToString(t?.toAuthInfoSerializable())
+            val json = Json.encodeToString<AuthInfoSerializable?>(t?.toAuthInfoSerializable())
             output.write(json.encodeToByteArray())
         }
     }
