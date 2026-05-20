@@ -1,6 +1,5 @@
 package com.marchenaya.runique
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.EntryProviderScope
@@ -8,6 +7,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.marchenaya.auth.presentation.intro.IntroScreenRoot
+import com.marchenaya.auth.presentation.login.LoginScreenRoot
 import com.marchenaya.auth.presentation.register.RegisterScreenRoot
 
 @Composable
@@ -56,6 +56,18 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
         )
     }
     entry<Routes.Login> {
-        Text(text = "Login")
+        LoginScreenRoot(
+            onLoginSuccess = {
+            },
+            onSignUpClick = {
+                navigator.navigate(
+                    route = Routes.Register,
+                    popUpTo = Routes.Login,
+                    inclusive = true,
+                    saveState = true,
+                    restoreState = true
+                )
+            }
+        )
     }
 }
