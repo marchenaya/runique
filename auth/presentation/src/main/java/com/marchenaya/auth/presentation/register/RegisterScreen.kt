@@ -45,7 +45,6 @@ import com.marchenaya.core.presentation.designsystem.CrossIcon
 import com.marchenaya.core.presentation.designsystem.EmailIcon
 import com.marchenaya.core.presentation.designsystem.Poppins
 import com.marchenaya.core.presentation.designsystem.RuniqueDarkRed
-import com.marchenaya.core.presentation.designsystem.RuniqueGray
 import com.marchenaya.core.presentation.designsystem.RuniqueGreen
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 import com.marchenaya.core.presentation.designsystem.components.GradientBackground
@@ -119,7 +118,7 @@ private fun RegisterScreen(
                     withStyle(
                         style = SpanStyle(
                             fontFamily = Poppins,
-                            color = RuniqueGray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     ) {
                         append(stringResource(id = R.string.already_have_an_account) + " ")
