@@ -8,18 +8,23 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.marchenaya.auth.presentation.intro.IntroScreenRoot
+import com.marchenaya.auth.presentation.login.LoginScreenRoot
 import com.marchenaya.auth.presentation.register.RegisterScreenRoot
 
 @Composable
-fun NavigationRoot() {
+fun NavigationRoot(
+    isLoggedIn: Boolean,
+    onAnalyticsClick: () -> Unit
+) {
     val navigationState = rememberNavigationState(
-        startRoute = Routes.Intro,
-        topLevelRoutes = setOf(Routes.Intro)
+        startRoute = if (isLoggedIn) Routes.RunOverview else Routes.Intro,
+        topLevelRoutes = setOf(Routes.Intro, Routes.RunOverview)
     )
     val navigator = remember { Navigator(navigationState) }
 
     val entryProvider = entryProvider {
         authGraph(navigator)
+        runGraph(navigator, onAnalyticsClick)
     }
 
     NavDisplay(
@@ -56,6 +61,35 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
         )
     }
     entry<Routes.Login> {
-        Text(text = "Login")
+        LoginScreenRoot(
+            onLoginSuccess = {
+                navigator.navigate(
+                    route = Routes.RunOverview,
+                    popUpTo = Routes.Intro,
+                    inclusive = true
+                )
+            },
+            onSignUpClick = {
+                navigator.navigate(
+                    route = Routes.Register,
+                    popUpTo = Routes.Login,
+                    inclusive = true,
+                    saveState = true,
+                    restoreState = true
+                )
+            }
+        )
+    }
+}
+
+private fun EntryProviderScope<NavKey>.runGraph(
+    navigator: Navigator,
+    onAnalyticsClick: () -> Unit
+) {
+    entry<Routes.RunOverview> {
+        Text("Run Overview Placeholder")
+    }
+    entry<Routes.ActiveRun> {
+        Text("Active Run Placeholder")
     }
 }
