@@ -20,7 +20,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationRoot()
+                    NavigationRoot(
+                        isLoggedIn = false, // TODO: Get this from a ViewModel later
+                        onAnalyticsClick = {}
+                    )
                 }
             }
         }

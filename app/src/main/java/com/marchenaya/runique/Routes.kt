@@ -14,4 +14,9 @@ sealed interface Routes : NavKey {
     @Serializable
     data object Login : Routes
 
+    @Serializable
+    data object RunOverview : Routes
+
+    @Serializable
+    data object ActiveRun : Routes
 }
