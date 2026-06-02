@@ -1,5 +1,6 @@
 package com.marchenaya.runique
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.EntryProviderScope
@@ -11,15 +12,19 @@ import com.marchenaya.auth.presentation.login.LoginScreenRoot
 import com.marchenaya.auth.presentation.register.RegisterScreenRoot
 
 @Composable
-fun NavigationRoot() {
+fun NavigationRoot(
+    isLoggedIn: Boolean,
+    onAnalyticsClick: () -> Unit
+) {
     val navigationState = rememberNavigationState(
-        startRoute = Routes.Intro,
-        topLevelRoutes = setOf(Routes.Intro)
+        startRoute = if (isLoggedIn) Routes.RunOverview else Routes.Intro,
+        topLevelRoutes = setOf(Routes.Intro, Routes.RunOverview)
     )
     val navigator = remember { Navigator(navigationState) }
 
     val entryProvider = entryProvider {
         authGraph(navigator)
+        runGraph(navigator, onAnalyticsClick)
     }
 
     NavDisplay(
@@ -58,6 +63,11 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
     entry<Routes.Login> {
         LoginScreenRoot(
             onLoginSuccess = {
+                navigator.navigate(
+                    route = Routes.RunOverview,
+                    popUpTo = Routes.Intro,
+                    inclusive = true
+                )
             },
             onSignUpClick = {
                 navigator.navigate(
@@ -69,5 +79,17 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
                 )
             }
         )
+    }
+}
+
+private fun EntryProviderScope<NavKey>.runGraph(
+    navigator: Navigator,
+    onAnalyticsClick: () -> Unit
+) {
+    entry<Routes.RunOverview> {
+        Text("Run Overview Placeholder")
+    }
+    entry<Routes.ActiveRun> {
+        Text("Active Run Placeholder")
     }
 }
