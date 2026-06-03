@@ -27,6 +27,7 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
@@ -66,7 +67,7 @@ fun LoginScreenRoot(
                 }
             }
 
-            LoginEvent.Success -> {
+            LoginEvent.LoginSuccess -> {
                 onLoginSuccess()
             }
         }
@@ -124,6 +125,7 @@ private fun LoginScreen(
                     state = state.email,
                     startIcon = EmailIcon,
                     endIcon = null,
+                    keyboardType = KeyboardType.Email,
                     hint = stringResource(R.string.example_email),
                     title = stringResource(R.string.email),
                     modifier = Modifier.fillMaxWidth()
@@ -147,7 +149,7 @@ private fun LoginScreen(
                 RuniqueActionButton(
                     text = stringResource(R.string.login),
                     isLoading = state.isLoggingIn,
-                    enabled = state.canLogin
+                    enabled = state.canLogin && !state.isLoggingIn
                 ) {
                     onAction(LoginAction.OnLoginClick)
                 }
