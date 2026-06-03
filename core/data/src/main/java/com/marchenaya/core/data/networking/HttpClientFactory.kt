@@ -59,7 +59,7 @@ class HttpClientFactory(
                     refreshTokens {
                         val info = sessionStorage.observeAuthInfo().firstOrNull()
                         val response = client.post<AccessTokenRequest, AccessTokenResponse>(
-                            route = "/accessToken",
+                            route = Endpoints.ACCESS_TOKEN,
                             body = AccessTokenRequest(
                                 refreshToken = info?.refreshToken ?: "",
                                 userId = info?.userId ?: ""
