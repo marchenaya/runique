@@ -1,6 +1,7 @@
 package com.marchenaya.auth.data
 
 import com.marchenaya.auth.domain.AuthRepository
+import com.marchenaya.core.data.networking.Endpoints
 import com.marchenaya.core.data.networking.post
 import com.marchenaya.core.domain.AuthInfo
 import com.marchenaya.core.domain.SessionStorage
@@ -20,7 +21,7 @@ class AuthRepositoryImpl(
         password: String
     ): EmptyResult<DataError.Network> {
         val result = httpClient.post<LoginRequest, LoginResponse>(
-            route = "/login",
+            route = Endpoints.LOGIN,
             body = LoginRequest(
                 email = email,
                 password = password
@@ -43,7 +44,7 @@ class AuthRepositoryImpl(
         password: String
     ): EmptyResult<DataError.Network> {
         return httpClient.post<RegisterRequest, Unit>(
-            route = "/register",
+            route = Endpoints.REGISTER,
             body = RegisterRequest(
                 email = email,
                 password = password
