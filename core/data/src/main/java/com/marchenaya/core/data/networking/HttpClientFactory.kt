@@ -15,6 +15,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.HttpRequestPipeline
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -48,12 +49,6 @@ class HttpClientFactory(
             defaultRequest {
                 contentType(ContentType.Application.Json)
                 header("x-api-key", BuildConfig.API_KEY)
-                if (url.encodedPath.contains(Endpoints.LOGIN) ||
-                    url.encodedPath.contains(Endpoints.REGISTER) ||
-                    url.encodedPath.contains(Endpoints.ACCESS_TOKEN)
-                ) {
-                    attributes.put(AuthCircuitBreaker, Unit)
-                }
             }
             install(Auth) {
                 bearer {
@@ -92,6 +87,20 @@ class HttpClientFactory(
                             )
                         }
                     }
+                    sendWithoutRequest { request ->
+                        !request.url.encodedPath.endsWith(Endpoints.LOGIN) &&
+                                !request.url.encodedPath.endsWith(Endpoints.REGISTER) &&
+                                !request.url.encodedPath.endsWith(Endpoints.ACCESS_TOKEN)
+                    }
+                }
+            }
+        }.apply {
+            requestPipeline.intercept(HttpRequestPipeline.State) {
+                if (context.url.encodedPath.endsWith(Endpoints.LOGIN) ||
+                    context.url.encodedPath.endsWith(Endpoints.REGISTER) ||
+                    context.url.encodedPath.endsWith(Endpoints.ACCESS_TOKEN)
+                ) {
+                    context.attributes.put(AuthCircuitBreaker, Unit)
                 }
             }
         }
