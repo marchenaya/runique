@@ -7,6 +7,7 @@ import com.marchenaya.core.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.AuthCircuitBreaker
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -17,6 +18,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
@@ -46,6 +48,12 @@ class HttpClientFactory(
             defaultRequest {
                 contentType(ContentType.Application.Json)
                 header("x-api-key", BuildConfig.API_KEY)
+                if (url.encodedPath.contains(Endpoints.LOGIN) ||
+                    url.encodedPath.contains(Endpoints.REGISTER) ||
+                    url.encodedPath.contains(Endpoints.ACCESS_TOKEN)
+                ) {
+                    attributes.put(AuthCircuitBreaker, Unit)
+                }
             }
             install(Auth) {
                 bearer {
