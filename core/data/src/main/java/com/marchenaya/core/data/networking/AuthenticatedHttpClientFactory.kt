@@ -7,7 +7,6 @@ import com.marchenaya.core.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.AuthCircuitBreaker
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -15,17 +14,15 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.HttpRequestPipeline
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
-class HttpClientFactory(
+class AuthenticatedHttpClientFactory(
     private val sessionStorage: SessionStorage
 ) {
 
@@ -87,20 +84,6 @@ class HttpClientFactory(
                             )
                         }
                     }
-                    sendWithoutRequest { request ->
-                        !request.url.encodedPath.endsWith(Endpoints.LOGIN) &&
-                                !request.url.encodedPath.endsWith(Endpoints.REGISTER) &&
-                                !request.url.encodedPath.endsWith(Endpoints.ACCESS_TOKEN)
-                    }
-                }
-            }
-        }.apply {
-            requestPipeline.intercept(HttpRequestPipeline.State) {
-                if (context.url.encodedPath.endsWith(Endpoints.LOGIN) ||
-                    context.url.encodedPath.endsWith(Endpoints.REGISTER) ||
-                    context.url.encodedPath.endsWith(Endpoints.ACCESS_TOKEN)
-                ) {
-                    context.attributes.put(AuthCircuitBreaker, Unit)
                 }
             }
         }

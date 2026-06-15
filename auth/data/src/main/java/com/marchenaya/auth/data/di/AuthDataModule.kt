@@ -2,6 +2,7 @@ package com.marchenaya.auth.data.di
 
 import com.marchenaya.auth.data.AuthRepositoryImpl
 import com.marchenaya.auth.data.EmailPatternValidator
+import com.marchenaya.auth.data.networking.UnauthenticatedHttpClientFactory
 import com.marchenaya.auth.domain.AuthRepository
 import com.marchenaya.auth.domain.PatternValidator
 import com.marchenaya.auth.domain.UserDataValidator
@@ -13,4 +14,7 @@ val authDataModule = module {
     singleOf(::UserDataValidator)
     singleOf(::EmailPatternValidator).bind<PatternValidator>()
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
+    single {
+        UnauthenticatedHttpClientFactory().build()
+    }
 }

@@ -17,9 +17,9 @@ class AuthInfoSerializer(
 
     override suspend fun readFrom(input: InputStream): AuthInfo? {
         return try {
-            Json.decodeFromString<AuthInfoSerializable>(
+            Json.decodeFromString<AuthInfoSerializable?>(
                 input.readBytes().decodeToString()
-            ).toAuthInfo()
+            )?.toAuthInfo()
         } catch (serialization: SerializationException) {
             throw CorruptionException("Unable to read AuthInfo", serialization)
         }
