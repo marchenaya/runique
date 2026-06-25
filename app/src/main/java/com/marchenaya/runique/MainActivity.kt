@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
+import com.marchenaya.core.presentation.ui.SnackbarScaffold
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +21,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationRoot(
-                        isLoggedIn = false, // TODO: Get this from a ViewModel later
-                        onAnalyticsClick = {}
-                    )
+                    SnackbarScaffold {
+                        NavigationRoot(
+                            isLoggedIn = false, // TODO: Get this from a ViewModel later
+                            onAnalyticsClick = {}
+                        )
+                    }
                 }
             }
         }

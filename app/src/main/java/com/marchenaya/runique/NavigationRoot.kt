@@ -87,7 +87,7 @@ private fun EntryProviderScope<NavKey>.runGraph(
     onAnalyticsClick: () -> Unit
 ) {
     entry<Routes.RunOverview> {
-        Text("Run Overview Placeholder")
+        Text("Run overview!")
     }
     entry<Routes.ActiveRun> {
         Text("Active Run Placeholder")
