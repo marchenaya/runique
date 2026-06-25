@@ -3,7 +3,6 @@ package com.marchenaya.auth.presentation.login
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,22 +10,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
@@ -41,8 +35,8 @@ import com.marchenaya.core.presentation.designsystem.components.GradientBackgrou
 import com.marchenaya.core.presentation.designsystem.components.RuniqueActionButton
 import com.marchenaya.core.presentation.designsystem.components.RuniquePasswordTextField
 import com.marchenaya.core.presentation.designsystem.components.RuniqueTextField
+import com.marchenaya.core.presentation.ui.LocalShowSnackbar
 import com.marchenaya.core.presentation.ui.ObserveAsEvents
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -51,22 +45,16 @@ fun LoginScreenRoot(
     onSignUpClick: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    val showSnackbar = LocalShowSnackbar.current
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.ShowSnackbar -> {
                 keyboardController?.hide()
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = event.message.asString(context)
-                    )
-                }
+                showSnackbar(event.message)
             }
 
-            LoginEvent.Success -> {
+            LoginEvent.LoginSuccess -> {
                 onLoginSuccess()
             }
         }
@@ -75,7 +63,6 @@ fun LoginScreenRoot(
 
     LoginScreen(
         state = viewModel.state,
-        snackbarHostState = snackbarHostState,
         onAction = { action ->
             when (action) {
                 is LoginAction.OnRegisterClick -> onSignUpClick()
@@ -89,17 +76,10 @@ fun LoginScreenRoot(
 @Composable
 private fun LoginScreen(
     state: LoginState,
-    snackbarHostState: SnackbarHostState,
     onAction: (LoginAction) -> Unit
 ) {
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { padding ->
-        GradientBackground(
-            modifier = Modifier
-                .consumeWindowInsets(padding)
-        ) {
-            Column(
+    GradientBackground {
+        Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
@@ -124,6 +104,7 @@ private fun LoginScreen(
                     state = state.email,
                     startIcon = EmailIcon,
                     endIcon = null,
+                    keyboardType = KeyboardType.Email,
                     hint = stringResource(R.string.example_email),
                     title = stringResource(R.string.email),
                     modifier = Modifier.fillMaxWidth()
@@ -147,7 +128,7 @@ private fun LoginScreen(
                 RuniqueActionButton(
                     text = stringResource(R.string.login),
                     isLoading = state.isLoggingIn,
-                    enabled = state.canLogin
+                    enabled = state.canLogin && !state.isLoggingIn
                 ) {
                     onAction(LoginAction.OnLoginClick)
                 }
@@ -193,7 +174,6 @@ private fun LoginScreen(
             }
         }
     }
-}
 
 @Preview
 @Composable
@@ -201,8 +181,7 @@ private fun LoginScreenPreview() {
     RuniqueTheme {
         LoginScreen(
             state = LoginState(),
-            onAction = {},
-            snackbarHostState = SnackbarHostState()
+            onAction = {}
         )
     }
 }

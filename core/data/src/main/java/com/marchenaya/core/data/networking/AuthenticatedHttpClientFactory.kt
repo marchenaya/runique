@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
-class HttpClientFactory(
+class AuthenticatedHttpClientFactory(
     private val sessionStorage: SessionStorage
 ) {
 
@@ -59,7 +59,7 @@ class HttpClientFactory(
                     refreshTokens {
                         val info = sessionStorage.observeAuthInfo().firstOrNull()
                         val response = client.post<AccessTokenRequest, AccessTokenResponse>(
-                            route = "/accessToken",
+                            route = Endpoints.ACCESS_TOKEN,
                             body = AccessTokenRequest(
                                 refreshToken = info?.refreshToken ?: "",
                                 userId = info?.userId ?: ""
