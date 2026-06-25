@@ -3,7 +3,6 @@ package com.marchenaya.auth.presentation.login
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -80,12 +78,8 @@ private fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit
 ) {
-    Scaffold { padding ->
-        GradientBackground(
-            modifier = Modifier
-                .consumeWindowInsets(padding)
-        ) {
-            Column(
+    GradientBackground {
+        Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
@@ -180,7 +174,6 @@ private fun LoginScreen(
             }
         }
     }
-}
 
 @Preview
 @Composable
