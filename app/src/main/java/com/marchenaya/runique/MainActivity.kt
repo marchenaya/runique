@@ -8,24 +8,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 import com.marchenaya.core.presentation.ui.SnackbarScaffold
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel by viewModel<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.state.isCheckingAuth
+            }
+        }
         setContent {
             RuniqueTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SnackbarScaffold {
-                        NavigationRoot(
-                            isLoggedIn = false, // TODO: Get this from a ViewModel later
-                            onAnalyticsClick = {}
-                        )
+                    if (!viewModel.state.isCheckingAuth) {
+                        SnackbarScaffold {
+                            NavigationRoot(
+                                isLoggedIn = viewModel.state.isLoggedIn,
+                                onAnalyticsClick = {}
+                            )
+                        }
                     }
                 }
             }
