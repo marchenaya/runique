@@ -10,6 +10,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.marchenaya.auth.presentation.intro.IntroScreenRoot
 import com.marchenaya.auth.presentation.login.LoginScreenRoot
 import com.marchenaya.auth.presentation.register.RegisterScreenRoot
+import com.marchenaya.run.presentation.run_overview.RunOverviewScreenRoot
 
 @Composable
 fun NavigationRoot(
@@ -87,7 +88,7 @@ private fun EntryProviderScope<NavKey>.runGraph(
     onAnalyticsClick: () -> Unit
 ) {
     entry<Routes.RunOverview> {
-        Text("Run overview!")
+        RunOverviewScreenRoot()
     }
     entry<Routes.ActiveRun> {
         Text("Active Run Placeholder")
