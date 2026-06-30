@@ -1,0 +1,29 @@
+package com.marchenaya.run.presentation.run_overview
+
+import androidx.lifecycle.ViewModel
+
+class RunOverviewViewModel : ViewModel() {
+
+    private var hasLoadedInitialData = false
+
+//    private val _state = MutableStateFlow(RunOverviewState())
+//    val state = _state
+//        .onStart {
+//            if (!hasLoadedInitialData) {
+//                /** Load initial data here **/
+//                hasLoadedInitialData = true
+//            }
+//        }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5_000L),
+//            initialValue = RunOverviewState()
+//        )
+
+    fun onAction(action: RunOverviewAction) {
+        when (action) {
+            else -> TODO("Handle actions")
+        }
+    }
+
+}
