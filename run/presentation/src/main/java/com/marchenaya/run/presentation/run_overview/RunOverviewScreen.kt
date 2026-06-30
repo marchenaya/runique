@@ -25,24 +25,24 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RunOverviewScreenRoot(
-    modifier: Modifier = Modifier,
+    onStartRunClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
-    //  val state by viewModel.state.collectAsStateWithLifecycle()
-
     RunOverviewScreen(
-        // state = state,
-        onAction = viewModel::onAction,
-        modifier = modifier
+        onAction = { action -> //todo : see better way todo do that
+            when (action) {
+                RunOverviewAction.OnStartClick -> onStartRunClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RunOverviewScreen(
-    //state: RunOverviewState,
-    onAction: (RunOverviewAction) -> Unit,
-    modifier: Modifier = Modifier
+    onAction: (RunOverviewAction) -> Unit
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
