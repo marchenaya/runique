@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -20,35 +21,39 @@ import com.marchenaya.core.presentation.designsystem.components.RuniqueFloatingA
 import com.marchenaya.core.presentation.designsystem.components.RuniqueScaffold
 import com.marchenaya.core.presentation.designsystem.components.RuniqueToolbar
 import com.marchenaya.core.presentation.designsystem.components.util.DropDownItem
+import com.marchenaya.core.presentation.ui.snackbar.LocalSnackbar
 import com.marchenaya.run.presentation.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RunOverviewScreenRoot(
-    modifier: Modifier = Modifier,
+    onStartRunClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
-    //  val state by viewModel.state.collectAsStateWithLifecycle()
-
     RunOverviewScreen(
-        // state = state,
-        onAction = viewModel::onAction,
-        modifier = modifier
+        snackbarHostState = LocalSnackbar.current.hostState,
+        onAction = { action -> //todo : see better way todo do that
+            when (action) {
+                RunOverviewAction.OnStartClick -> onStartRunClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RunOverviewScreen(
-    //state: RunOverviewState,
-    onAction: (RunOverviewAction) -> Unit,
-    modifier: Modifier = Modifier
+    snackbarHostState: SnackbarHostState? = null,
+    onAction: (RunOverviewAction) -> Unit
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = topAppBarState
     )
     RuniqueScaffold(
+        snackbarHostState = snackbarHostState,
         topAppBar = {
             RuniqueToolbar(
                 showBackButton = false,
