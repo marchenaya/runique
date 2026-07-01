@@ -4,6 +4,7 @@ import android.app.Application
 import com.marchenaya.auth.data.di.authDataModule
 import com.marchenaya.auth.presentation.di.authViewModelModule
 import com.marchenaya.core.data.di.coreDataModule
+import com.marchenaya.run.presentation.di.runViewModelModule
 import com.marchenaya.runique.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -24,7 +25,8 @@ class RuniqueApp : Application() {
                 appModule,
                 authDataModule,
                 authViewModelModule,
-                coreDataModule
+                coreDataModule,
+                runViewModelModule
             )
         }
     }
