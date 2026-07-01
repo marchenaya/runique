@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,6 +19,7 @@ import com.marchenaya.core.presentation.designsystem.StopIcon
 import com.marchenaya.core.presentation.designsystem.components.RuniqueFloatingActionButton
 import com.marchenaya.core.presentation.designsystem.components.RuniqueScaffold
 import com.marchenaya.core.presentation.designsystem.components.RuniqueToolbar
+import com.marchenaya.core.presentation.ui.snackbar.LocalSnackbar
 import com.marchenaya.run.presentation.R
 import com.marchenaya.run.presentation.active_run.components.RunDataCard
 import org.koin.compose.viewmodel.koinViewModel
@@ -28,6 +30,7 @@ fun ActiveRunScreenRoot(
 ) {
     ActiveRunScreen(
         state = viewModel.state,
+        snackbarHostState = LocalSnackbar.current.hostState,
         onAction = viewModel::onAction
     )
 }
@@ -36,10 +39,12 @@ fun ActiveRunScreenRoot(
 @Composable
 fun ActiveRunScreen(
     state: ActiveRunState,
+    snackbarHostState: SnackbarHostState? = null,
     onAction: (ActiveRunAction) -> Unit
 ) {
     RuniqueScaffold(
         withGradient = false,
+        snackbarHostState = snackbarHostState,
         topAppBar = {
             RuniqueToolbar(
                 showBackButton = true,

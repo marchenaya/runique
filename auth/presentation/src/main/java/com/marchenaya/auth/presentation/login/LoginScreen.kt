@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,12 +32,12 @@ import com.marchenaya.auth.presentation.R
 import com.marchenaya.core.presentation.designsystem.EmailIcon
 import com.marchenaya.core.presentation.designsystem.Poppins
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
-import com.marchenaya.core.presentation.designsystem.components.GradientBackground
 import com.marchenaya.core.presentation.designsystem.components.RuniqueActionButton
 import com.marchenaya.core.presentation.designsystem.components.RuniquePasswordTextField
+import com.marchenaya.core.presentation.designsystem.components.RuniqueScaffold
 import com.marchenaya.core.presentation.designsystem.components.RuniqueTextField
-import com.marchenaya.core.presentation.ui.LocalShowSnackbar
 import com.marchenaya.core.presentation.ui.ObserveAsEvents
+import com.marchenaya.core.presentation.ui.snackbar.LocalSnackbar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -46,23 +47,21 @@ fun LoginScreenRoot(
     viewModel: LoginViewModel = koinViewModel()
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val showSnackbar = LocalShowSnackbar.current
+    val snackbar = LocalSnackbar.current
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.ShowSnackbar -> {
                 keyboardController?.hide()
-                showSnackbar(event.message)
+                snackbar.show(event.message)
             }
 
-            LoginEvent.LoginSuccess -> {
-                onLoginSuccess()
-            }
+            LoginEvent.LoginSuccess -> onLoginSuccess()
         }
-
     }
 
     LoginScreen(
         state = viewModel.state,
+        snackbarHostState = snackbar.hostState,
         onAction = { action ->
             when (action) {
                 is LoginAction.OnRegisterClick -> onSignUpClick()
@@ -76,104 +75,109 @@ fun LoginScreenRoot(
 @Composable
 private fun LoginScreen(
     state: LoginState,
+    snackbarHostState: SnackbarHostState? = null,
     onAction: (LoginAction) -> Unit
 ) {
-    GradientBackground {
+    RuniqueScaffold(
+        withGradient = true,
+        snackbarHostState = snackbarHostState
+    ) { padding ->
         Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .padding(vertical = 32.dp)
-                    .padding(top = 16.dp)
+            modifier = Modifier
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .padding(vertical = 32.dp)
+                .padding(top = 16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.hi_there),
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Text(
+                text = stringResource(R.string.runique_welcome_text),
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            RuniqueTextField(
+                state = state.email,
+                startIcon = EmailIcon,
+                endIcon = null,
+                keyboardType = KeyboardType.Email,
+                hint = stringResource(R.string.example_email),
+                title = stringResource(R.string.email),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(17.dp))
+
+            RuniquePasswordTextField(
+                state = state.password,
+                isPasswordVisible = state.isPasswordVisible,
+                onTogglePasswordVisibility = {
+                    onAction(LoginAction.OnTogglePasswordVisibility)
+                },
+                hint = stringResource(R.string.password),
+                title = stringResource(R.string.password),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            RuniqueActionButton(
+                text = stringResource(R.string.login),
+                isLoading = state.isLoggingIn,
+                enabled = state.canLogin && !state.isLoggingIn
             ) {
-                Text(
-                    text = stringResource(R.string.hi_there),
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Text(
-                    text = stringResource(R.string.runique_welcome_text),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                onAction(LoginAction.OnLoginClick)
+            }
 
-                Spacer(modifier = Modifier.height(48.dp))
-
-                RuniqueTextField(
-                    state = state.email,
-                    startIcon = EmailIcon,
-                    endIcon = null,
-                    keyboardType = KeyboardType.Email,
-                    hint = stringResource(R.string.example_email),
-                    title = stringResource(R.string.email),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(17.dp))
-
-                RuniquePasswordTextField(
-                    state = state.password,
-                    isPasswordVisible = state.isPasswordVisible,
-                    onTogglePasswordVisibility = {
-                        onAction(LoginAction.OnTogglePasswordVisibility)
-                    },
-                    hint = stringResource(R.string.password),
-                    title = stringResource(R.string.password),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                RuniqueActionButton(
-                    text = stringResource(R.string.login),
-                    isLoading = state.isLoggingIn,
-                    enabled = state.canLogin && !state.isLoggingIn
+            val annotatedString = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        fontFamily = Poppins,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 ) {
-                    onAction(LoginAction.OnLoginClick)
-                }
+                    append(stringResource(id = R.string.dont_have_an_account) + " ")
 
-                val annotatedString = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontFamily = Poppins,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    ) {
-                        append(stringResource(id = R.string.dont_have_an_account) + " ")
+                    val loginLink = LinkAnnotation.Clickable(
+                        tag = "clickable_text",
+                        linkInteractionListener = {
+                            onAction(LoginAction.OnRegisterClick)
+                        }
+                    )
 
-                        val loginLink = LinkAnnotation.Clickable(
-                            tag = "clickable_text",
-                            linkInteractionListener = {
-                                onAction(LoginAction.OnRegisterClick)
-                            }
-                        )
-
-                        withLink(loginLink) {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontFamily = Poppins,
-                                    textDecoration = TextDecoration.None
-                                )
-                            ) {
-                                append(stringResource(id = R.string.sign_up))
-                            }
+                    withLink(loginLink) {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontFamily = Poppins,
+                                textDecoration = TextDecoration.None
+                            )
+                        ) {
+                            append(stringResource(id = R.string.sign_up))
                         }
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .weight(1f),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    Text(text = annotatedString)
-                }
+            }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .weight(1f),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Text(text = annotatedString)
             }
         }
     }
+}
 
 @Preview
 @Composable

@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
-import com.marchenaya.core.presentation.ui.SnackbarScaffold
+import com.marchenaya.core.presentation.ui.snackbar.SnackbarProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     if (!viewModel.state.isCheckingAuth) {
-                        SnackbarScaffold {
+                        SnackbarProvider {
                             NavigationRoot(
                                 isLoggedIn = viewModel.state.isLoggedIn,
                                 onAnalyticsClick = {}
