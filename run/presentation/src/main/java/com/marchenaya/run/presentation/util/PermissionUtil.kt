@@ -30,7 +30,7 @@ fun Context.hasLocationPermission(): Boolean {
 
 fun Context.hasNotificationPermission(): Boolean {
     return if (Build.VERSION.SDK_INT >= TIRAMISU) {
-        hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        hasPermission(Manifest.permission.POST_NOTIFICATIONS)
     } else {
         true
     }
