@@ -48,7 +48,7 @@ fun RunDataCard(
             value = elapsedTime.formatted(),
             valueFontSize = 32.sp
         )
-        Spacer(modifier.height(24.dp))
+        Spacer(Modifier.height(24.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
