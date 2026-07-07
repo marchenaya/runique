@@ -34,6 +34,7 @@ import com.marchenaya.core.presentation.designsystem.components.RuniqueToolbar
 import com.marchenaya.core.presentation.ui.snackbar.LocalSnackbar
 import com.marchenaya.run.presentation.R
 import com.marchenaya.run.presentation.active_run.components.RunDataCard
+import com.marchenaya.run.presentation.active_run.maps.TrackerMap
 import com.marchenaya.run.presentation.util.hasLocationPermission
 import com.marchenaya.run.presentation.util.hasNotificationPermission
 import com.marchenaya.run.presentation.util.shouldShowLocationPermissionRationale
@@ -145,6 +146,14 @@ fun ActiveRunScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
         ) {
+            TrackerMap(
+                isRunFinished = state.isRunFinished,
+                currentLocation = state.currentLocation,
+                locations = state.runData.locations,
+                onSnapshot = {},
+                modifier = Modifier
+                    .fillMaxSize()
+            )
             RunDataCard(
                 elapsedTime = state.elapsedTime,
                 runData = state.runData,
