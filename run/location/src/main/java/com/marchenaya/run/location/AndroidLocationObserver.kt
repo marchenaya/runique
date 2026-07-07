@@ -54,8 +54,10 @@ class AndroidLocationObserver(
             ) {
                 close()
             } else {
-                client.lastLocation.addOnSuccessListener { location ->
-                    trySend(location.toLocationWithAltitude())
+                client.lastLocation.addOnSuccessListener {
+                    it?.let { location ->
+                        trySend(location.toLocationWithAltitude())
+                    }
                 }
 
                 val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, interval)
