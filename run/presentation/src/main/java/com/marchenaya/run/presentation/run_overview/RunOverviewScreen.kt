@@ -104,7 +104,6 @@ fun RunOverviewScreen(
 private fun RunOverviewScreenPreview() {
     RuniqueTheme {
         RunOverviewScreen(
-            // state = RunOverviewState(),
             onAction = {}
         )
     }
