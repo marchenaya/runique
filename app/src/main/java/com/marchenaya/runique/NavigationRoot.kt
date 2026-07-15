@@ -2,6 +2,7 @@ package com.marchenaya.runique
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -10,6 +11,7 @@ import com.marchenaya.auth.presentation.intro.IntroScreenRoot
 import com.marchenaya.auth.presentation.login.LoginScreenRoot
 import com.marchenaya.auth.presentation.register.RegisterScreenRoot
 import com.marchenaya.run.presentation.active_run.ActiveRunScreenRoot
+import com.marchenaya.run.presentation.active_run.service.ActiveRunService
 import com.marchenaya.run.presentation.run_overview.RunOverviewScreenRoot
 
 @Composable
@@ -96,7 +98,34 @@ private fun EntryProviderScope<NavKey>.runGraph(
             }
         )
     }
-    entry<Routes.ActiveRun> {
-        ActiveRunScreenRoot()
+    // TODO:
+//    entry<Routes.ActiveRun> {
+//        ActiveRunScreenRoot()
+//    }
+    composable(
+        route = "active_run",
+        deepLinks = listOf(
+            navDeepLink {
+                uriPattern = "runique://active_run"
+            }
+        )
+    ) {
+        val context = LocalContext.current
+        ActiveRunScreenRoot(
+            onServiceToggle = { shouldServiceRun ->
+                if (shouldServiceRun) {
+                    context.startService(
+                        ActiveRunService.createStartIntent(
+                            context = context,
+                            activityClass = MainActivity::class.java
+                        )
+                    )
+                } else {
+                    context.startService(
+                        ActiveRunService.createStopIntent(context = context)
+                    )
+                }
+            }
+        )
     }
 }
