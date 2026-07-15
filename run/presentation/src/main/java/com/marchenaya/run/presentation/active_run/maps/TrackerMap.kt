@@ -47,6 +47,7 @@ fun TrackerMap(
         MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style)
     }
     val cameraPositionState = rememberCameraPositionState()
+    //TODO : Resolve blinking marker, working old way : rememberMarkerState()
     val markerState = rememberUpdatedMarkerState()
 
     val markerPositionLatitude by animateFloatAsState(
