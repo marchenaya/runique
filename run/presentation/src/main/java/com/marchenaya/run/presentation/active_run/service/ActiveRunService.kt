@@ -61,7 +61,7 @@ class ActiveRunService : Service() {
 
             ACTION_STOP -> stop()
         }
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
 
     private fun start(activityClass: Class<*>) {
