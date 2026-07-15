@@ -34,6 +34,8 @@ class ActiveRunService : Service() {
         NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(com.marchenaya.core.presentation.designsystem.R.drawable.logo)
             .setContentTitle(getString(R.string.active_run))
+            .setOnlyAlertOnce(true)
+            .setOngoing(true)
     }
 
     private val runningTracker by inject<RunningTracker>()
