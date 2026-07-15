@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
+import com.marchenaya.core.domain.util.URL_ACTIVE_RUN
 import com.marchenaya.core.presentation.ui.formatted
 import com.marchenaya.run.domain.RunningTracker
 import com.marchenaya.run.presentation.R
@@ -70,7 +71,7 @@ class ActiveRunService : Service() {
             createNotificationChannel()
 
             val activityIntent = Intent(applicationContext, activityClass).apply {
-                data = "runique://active_run".toUri()
+                data = URL_ACTIVE_RUN.toUri()
                 addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
             val pendingIntent = TaskStackBuilder.create(applicationContext).run {
