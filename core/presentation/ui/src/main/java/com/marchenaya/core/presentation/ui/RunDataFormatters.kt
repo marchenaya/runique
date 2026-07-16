@@ -6,7 +6,6 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 
-//todo : see to convert to mapper
 fun Duration.formatted(): String {
     val totalSeconds = inWholeSeconds
     val hours = String.format(Locale.getDefault(), "%02d", totalSeconds / 3600)
@@ -16,20 +15,31 @@ fun Duration.formatted(): String {
     return "$hours:$minutes:$seconds"
 }
 
-fun Double.toFormattedKm(): String {
-    return "${this.roundToDecimals(1)} km"
+fun Double.toFormattedKm(): UiText {
+    return UiText.StringResource(R.string.format_distance_km, roundToDecimals(1))
 }
 
-fun Duration.toFormattedPace(distanceKm: Double): String {
+fun Duration.toFormattedPace(distanceKm: Double): UiText {
     if (this == Duration.ZERO || distanceKm <= 0.0) {
-        return "-"
+        return UiText.StringResource(R.string.format_no_value)
     }
 
     val secondsPerKm = (this.inWholeSeconds / distanceKm).roundToInt()
     val averagePaceMinutes = secondsPerKm / 60
     val averagePaceSeconds = String.format(Locale.getDefault(), "%02d", secondsPerKm % 60)
 
-    return "$averagePaceMinutes:$averagePaceSeconds / km"
+    return UiText.StringResource(
+        R.string.format_pace_per_km,
+        "$averagePaceMinutes:$averagePaceSeconds"
+    )
+}
+
+fun Double.toFormattedKmH(): UiText {
+    return UiText.StringResource(R.string.format_speed_kmh, roundToDecimals(1))
+}
+
+fun Int.toFormattedMeters(): UiText {
+    return UiText.StringResource(R.string.format_elevation_meters, this)
 }
 
 private fun Double.roundToDecimals(decimalCount: Int): Double {
