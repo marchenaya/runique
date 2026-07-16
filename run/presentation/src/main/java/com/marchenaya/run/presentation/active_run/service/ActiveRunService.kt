@@ -79,7 +79,7 @@ class ActiveRunService : Service() {
                 getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
             }
             val notification = baseNotification
-                .setContentText("00:00:00")
+                .setContentText(INITIAL_TIME)
                 .setContentIntent(pendingIntent)
                 .build()
 
@@ -119,6 +119,8 @@ class ActiveRunService : Service() {
 
     companion object {
         var isServiceActive = false
+
+        private const val INITIAL_TIME = "00:00:00"
         private const val CHANNEL_ID = "active_run"
 
         private const val ACTION_START = "ACTION_START"
