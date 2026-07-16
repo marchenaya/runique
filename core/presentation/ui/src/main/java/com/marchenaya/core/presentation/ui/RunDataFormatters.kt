@@ -6,7 +6,6 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 
-//todo : see to convert to mapper
 fun Duration.formatted(): String {
     val totalSeconds = inWholeSeconds
     val hours = String.format(Locale.getDefault(), "%02d", totalSeconds / 3600)
@@ -17,7 +16,7 @@ fun Duration.formatted(): String {
 }
 
 fun Double.toFormattedKm(): String {
-    return "${this.roundToDecimals(1)} km"
+    return "${roundToDecimals(1)} km"
 }
 
 fun Duration.toFormattedPace(distanceKm: Double): String {
@@ -30,6 +29,14 @@ fun Duration.toFormattedPace(distanceKm: Double): String {
     val averagePaceSeconds = String.format(Locale.getDefault(), "%02d", secondsPerKm % 60)
 
     return "$averagePaceMinutes:$averagePaceSeconds / km"
+}
+
+fun Double.toFormattedKmH(): String {
+    return "${roundToDecimals(1)} km/h"
+}
+
+fun Int.toFormattedMeters(): String {
+    return "$this m"
 }
 
 private fun Double.roundToDecimals(decimalCount: Int): Double {
