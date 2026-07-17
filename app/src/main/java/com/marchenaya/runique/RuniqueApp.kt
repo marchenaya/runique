@@ -4,6 +4,7 @@ import android.app.Application
 import com.marchenaya.auth.data.di.authDataModule
 import com.marchenaya.auth.presentation.di.authViewModelModule
 import com.marchenaya.core.data.di.coreDataModule
+import com.marchenaya.core.database.di.databaseModule
 import com.marchenaya.run.location.di.locationModule
 import com.marchenaya.run.presentation.di.runPresentationModule
 import com.marchenaya.runique.di.appModule
@@ -33,7 +34,8 @@ class RuniqueApp : Application() {
                 authViewModelModule,
                 coreDataModule,
                 runPresentationModule,
-                locationModule
+                locationModule,
+                databaseModule
             )
         }
     }
