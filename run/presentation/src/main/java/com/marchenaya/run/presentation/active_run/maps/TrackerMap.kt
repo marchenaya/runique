@@ -5,35 +5,51 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
+import com.google.maps.android.ktx.awaitSnapshot
 import com.marchenaya.core.domain.location.Location
 import com.marchenaya.core.domain.location.LocationTimestamp
 import com.marchenaya.core.presentation.designsystem.RunIcon
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 import com.marchenaya.run.presentation.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun TrackerMap(
     isRunFinished: Boolean,
@@ -79,6 +95,13 @@ fun TrackerMap(
         }
     }
 
+    var triggerCapture by remember {
+        mutableStateOf(false)
+    }
+    var createSnapshotJob: Job? = remember {
+        null
+    }
+
     GoogleMap(
         cameraPositionState = cameraPositionState,
         properties = MapProperties(
@@ -86,9 +109,56 @@ fun TrackerMap(
         ),
         uiSettings = MapUiSettings(
             zoomControlsEnabled = false
-        )
+        ),
+        modifier = if (isRunFinished) {
+            modifier
+                .width(300.dp)
+                .aspectRatio(16 / 9f)
+                .alpha(0f)
+                .onSizeChanged {
+                    if (it.width >= 300) {
+                        triggerCapture = true
+                    }
+                }
+        } else {
+            modifier
+        }
     ) {
         RuniquePolylines(locations = locations)
+
+        MapEffect(locations, isRunFinished, triggerCapture, createSnapshotJob) { map ->
+            if (isRunFinished && triggerCapture && createSnapshotJob == null) {
+                triggerCapture = false
+
+                val boundsBuilder = LatLngBounds.builder()
+                locations.flatten().forEach { location ->
+                    boundsBuilder
+                        .include(
+                            LatLng(
+                                location.location.location.latitude,
+                                location.location.location.longitude
+                            )
+                        )
+                }
+                map.moveCamera(
+                    CameraUpdateFactory.newLatLngBounds(
+                        boundsBuilder.build(),
+                        100
+                    )
+                )
+
+                map.setOnCameraIdleListener {
+                    createSnapshotJob?.cancel()
+                    createSnapshotJob =
+                        GlobalScope.launch { //todo : get screenshot of Google Maps with another API
+                            // Make sure the map is sharp and focused before taking the screenshot
+                            delay(500L.milliseconds)
+                            map.awaitSnapshot()?.let(onSnapshot)
+                        }
+                }
+
+            }
+        }
 
         if (!isRunFinished && currentLocation != null) {
             MarkerComposable(
