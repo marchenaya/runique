@@ -2,6 +2,7 @@ package com.marchenaya.run.presentation.active_run
 
 import android.Manifest
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Build.VERSION_CODES.TIRAMISU
 import androidx.activity.ComponentActivity
@@ -42,6 +43,7 @@ import com.marchenaya.run.presentation.util.hasNotificationPermission
 import com.marchenaya.run.presentation.util.shouldShowLocationPermissionRationale
 import com.marchenaya.run.presentation.util.shouldShowNotificationPermissionRationale
 import org.koin.compose.viewmodel.koinViewModel
+import java.io.ByteArrayOutputStream
 
 @Composable
 fun ActiveRunScreenRoot(
@@ -167,7 +169,17 @@ fun ActiveRunScreen(
                 isRunFinished = state.isRunFinished,
                 currentLocation = state.currentLocation,
                 locations = state.runData.locations,
-                onSnapshot = {},
+                onSnapshot = { bitmap -> //todo : put this code in data layer
+                    val stream = ByteArrayOutputStream()
+                    stream.use {
+                        bitmap.compress(
+                            Bitmap.CompressFormat.JPEG,
+                            80,
+                            it
+                        )
+                    }
+                    onAction(ActiveRunAction.OnRunProcessed(stream.toByteArray()))
+                },
                 modifier = Modifier
                     .fillMaxSize()
             )
