@@ -136,6 +136,13 @@ class RunningTracker(
         isObservingLocation.value = false
     }
 
+    fun finishRun() {
+        stopObservingLocation()
+        setIsTracking(false)
+        _elapsedTime.value = Duration.ZERO
+        _runData.value = RunData()
+    }
+
     companion object {
         private const val LOCATION_INTERVAL_MS = 1000L
     }
