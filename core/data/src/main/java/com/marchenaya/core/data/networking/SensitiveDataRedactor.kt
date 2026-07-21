@@ -2,7 +2,7 @@ package com.marchenaya.core.data.networking
 
 object SensitiveDataRedactor {
 
-    private const val PLACEHOLDER = "*****"
+    private const val PLACEHOLDER = "***"
 
     private val sensitiveKeys = listOf("password", "accessToken", "refreshToken")
 
