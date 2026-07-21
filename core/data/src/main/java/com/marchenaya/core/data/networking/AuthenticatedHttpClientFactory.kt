@@ -11,16 +11,12 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 
 class AuthenticatedHttpClientFactory(
     private val sessionStorage: SessionStorage
@@ -35,14 +31,7 @@ class AuthenticatedHttpClientFactory(
                     }
                 )
             }
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        Timber.d(message)
-                    }
-                }
-                level = LogLevel.ALL
-            }
+            installSecureLogging()
             defaultRequest {
                 contentType(ContentType.Application.Json)
                 header("x-api-key", BuildConfig.API_KEY)
