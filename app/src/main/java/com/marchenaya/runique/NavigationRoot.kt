@@ -74,7 +74,11 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
                 )
             },
             onSuccessfulRegistration = {
-                navigator.navigate(Routes.Login)
+                navigator.navigate(
+                    route = Routes.Login,
+                    popUpTo = Routes.Register,
+                    inclusive = true
+                )
             }
         )
     }
