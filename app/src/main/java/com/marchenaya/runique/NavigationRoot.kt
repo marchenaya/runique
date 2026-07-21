@@ -74,7 +74,11 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
                 )
             },
             onSuccessfulRegistration = {
-                navigator.navigate(Routes.Login)
+                navigator.navigate(
+                    route = Routes.Login,
+                    popUpTo = Routes.Register,
+                    inclusive = true
+                )
             }
         )
     }
@@ -116,6 +120,12 @@ private fun EntryProviderScope<NavKey>.runGraph(
     entry<Routes.ActiveRun> {
         val context = LocalContext.current
         ActiveRunScreenRoot(
+            onBack = {
+                navigator.goBack()
+            },
+            onFinish = {
+                navigator.goBack()
+            },
             onServiceToggle = { shouldServiceRun ->
                 if (shouldServiceRun) {
                     context.startService(
