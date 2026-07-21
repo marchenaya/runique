@@ -14,4 +14,6 @@ interface RunRepository {
 
     suspend fun deleteRun(id: RunId)
 
+    suspend fun syncPendingRuns()
+
 }
