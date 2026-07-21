@@ -33,6 +33,7 @@ import com.marchenaya.core.presentation.designsystem.components.RuniqueFloatingA
 import com.marchenaya.core.presentation.designsystem.components.RuniqueOutlinedActionButton
 import com.marchenaya.core.presentation.designsystem.components.RuniqueScaffold
 import com.marchenaya.core.presentation.designsystem.components.RuniqueToolbar
+import com.marchenaya.core.presentation.ui.ObserveAsEvents
 import com.marchenaya.core.presentation.ui.snackbar.LocalSnackbar
 import com.marchenaya.run.presentation.R
 import com.marchenaya.run.presentation.active_run.components.RunDataCard
@@ -47,14 +48,39 @@ import java.io.ByteArrayOutputStream
 
 @Composable
 fun ActiveRunScreenRoot(
+    onFinish: () -> Unit,
+    onBack: () -> Unit,
     onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     viewModel: ActiveRunViewModel = koinViewModel()
 ) {
+    val snackbar = LocalSnackbar.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is ActiveRunEvent.Error -> {
+                snackbar.show(event.error)
+            }
+
+            is ActiveRunEvent.RunSaved -> {
+                onFinish()
+            }
+        }
+    }
     ActiveRunScreen(
         state = viewModel.state,
         onServiceToggle = onServiceToggle,
         snackbarHostState = LocalSnackbar.current.hostState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                is ActiveRunAction.OnBackClick -> {
+                    if (!viewModel.state.hasStartedRunning) {
+                        onBack()
+                    }
+                }
+
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
@@ -67,6 +93,7 @@ fun ActiveRunScreen(
     onAction: (ActiveRunAction) -> Unit
 ) {
     val context = LocalContext.current
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { perms ->

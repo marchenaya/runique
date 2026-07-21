@@ -116,6 +116,12 @@ private fun EntryProviderScope<NavKey>.runGraph(
     entry<Routes.ActiveRun> {
         val context = LocalContext.current
         ActiveRunScreenRoot(
+            onBack = {
+                navigator.goBack()
+            },
+            onFinish = {
+                navigator.goBack()
+            },
             onServiceToggle = { shouldServiceRun ->
                 if (shouldServiceRun) {
                     context.startService(
