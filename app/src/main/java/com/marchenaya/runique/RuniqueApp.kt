@@ -6,6 +6,7 @@ import com.marchenaya.auth.presentation.di.authViewModelModule
 import com.marchenaya.core.data.di.coreDataModule
 import com.marchenaya.core.database.di.databaseModule
 import com.marchenaya.run.location.di.locationModule
+import com.marchenaya.run.network.di.networkModule
 import com.marchenaya.run.presentation.di.runPresentationModule
 import com.marchenaya.runique.di.appModule
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,8 @@ class RuniqueApp : Application() {
                 coreDataModule,
                 runPresentationModule,
                 locationModule,
-                databaseModule
+                databaseModule,
+                networkModule
             )
         }
     }
