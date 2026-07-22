@@ -3,7 +3,7 @@ agp = "9.2.1"
 androidTools = "32.2.1"
 playFeatureDelivery = "2.1.0"
 coreSplashscreen = "1.2.0"
-coilCompose = "2.7.0"
+coil = "3.3.0"
 desugar_jdk_libs = "2.1.5"
 kotlin = "2.3.21"
 coreKtx = "1.18.0"
@@ -65,7 +65,8 @@ androidx-datastore-tink = { module = "androidx.datastore:datastore-tink", versio
 tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
 androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }

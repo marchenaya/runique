@@ -10,6 +10,7 @@ android {
 dependencies {
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.ktor3)
 
     // Compose
     implementation(libs.androidx.activity.compose)
