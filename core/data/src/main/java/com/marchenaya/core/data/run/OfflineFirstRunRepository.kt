@@ -8,12 +8,13 @@ import com.marchenaya.core.domain.run.RemoteRunDataSource
 import com.marchenaya.core.domain.run.Run
 import com.marchenaya.core.domain.run.RunId
 import com.marchenaya.core.domain.run.RunRepository
+import com.marchenaya.core.domain.run.SyncRunScheduler
 import com.marchenaya.core.domain.util.DataError
+import com.marchenaya.core.domain.util.DispatcherProvider
 import com.marchenaya.core.domain.util.EmptyResult
 import com.marchenaya.core.domain.util.Result
 import com.marchenaya.core.domain.util.asEmptyDataResult
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -26,7 +27,9 @@ class OfflineFirstRunRepository(
     private val remoteRunDataSource: RemoteRunDataSource,
     private val applicationScope: CoroutineScope,
     private val runPendingSyncDao: RunPendingSyncDao,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val dispatcherProvider: DispatcherProvider,
+    private val syncRunScheduler: SyncRunScheduler
 ) : RunRepository {
 
     override fun getRuns(): Flow<List<Run>> {
@@ -61,6 +64,14 @@ class OfflineFirstRunRepository(
 
         return when (remoteResult) {
             is Result.Error -> {
+                applicationScope.launch {
+                    syncRunScheduler.scheduleSync(
+                        type = SyncRunScheduler.SyncType.CreateRun(
+                            run = runWithId,
+                            mapPicturesBytes = mapPicture
+                        )
+                    )
+                }.join()
                 Result.Success(Unit)
             }
 
@@ -87,10 +98,18 @@ class OfflineFirstRunRepository(
         val remoteResult = applicationScope.async {
             remoteRunDataSource.deleteRun(id)
         }.await()
+
+        if (remoteResult is Result.Error) {
+            applicationScope.launch {
+                syncRunScheduler.scheduleSync(
+                    type = SyncRunScheduler.SyncType.DeleteRun(id)
+                )
+            }.join()
+        }
     }
 
     override suspend fun syncPendingRuns() {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcherProvider.io) {
             val userId = sessionStorage.observeAuthInfo().firstOrNull()?.userId
                 ?: return@withContext
 
