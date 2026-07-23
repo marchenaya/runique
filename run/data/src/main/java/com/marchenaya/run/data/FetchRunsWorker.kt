@@ -5,7 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.marchenaya.core.domain.run.RunRepository
 
-class FetchRunWorker(
+class FetchRunsWorker(
     context: Context,
     params: WorkerParameters,
     private val runRepository: RunRepository
