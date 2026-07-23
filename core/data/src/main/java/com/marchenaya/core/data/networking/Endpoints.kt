@@ -7,4 +7,5 @@ object Endpoints {
     const val GET_RUNS = "/runs"
     const val POST_RUN = "/run"
     const val DELETE_RUN = "/run"
+    const val LOGOUT = "/logout"
 }

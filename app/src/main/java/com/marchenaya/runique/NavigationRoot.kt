@@ -114,6 +114,13 @@ private fun EntryProviderScope<NavKey>.runGraph(
                 navigator.navigate(
                     Routes.ActiveRun
                 )
+            },
+            onLogoutClick = {
+                navigator.navigate(
+                    route = Routes.Intro,
+                    popUpTo = Routes.RunOverview,
+                    inclusive = true
+                )
             }
         )
     }

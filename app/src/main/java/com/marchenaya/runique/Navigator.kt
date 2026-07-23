@@ -11,8 +11,8 @@ class Navigator(val state: NavigationState) {
         route: NavKey,
         popUpTo: NavKey? = null,
         inclusive: Boolean = false,
-        @Suppress("UNUSED_PARAMETER") saveState: Boolean = false,
-        @Suppress("UNUSED_PARAMETER") restoreState: Boolean = false
+        saveState: Boolean = false,
+        restoreState: Boolean = false
     ) {
         if (route in state.backStacks.keys) {
             // This is a top level route, just switch to it.
