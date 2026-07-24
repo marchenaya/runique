@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 import com.marchenaya.core.presentation.ui.snackbar.SnackbarProvider
+import com.marchenaya.runique.navigation.NavigationRoot
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {

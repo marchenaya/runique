@@ -1,4 +1,4 @@
-package com.marchenaya.runique
+package com.marchenaya.runique.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -37,11 +37,14 @@ fun rememberNavigationState(
 
     val backStacks = topLevelRoutes.associateWith { key -> rememberNavBackStack(key) }
 
+    val savedStacks = topLevelRoutes.associateWith { rememberNavBackStack() }
+
     return remember(startRoute, topLevelRoutes) {
         NavigationState(
             startRoute = startRoute,
             topLevelRoute = topLevelRoute,
-            backStacks = backStacks
+            backStacks = backStacks,
+            savedStacks = savedStacks
         )
     }
 }
@@ -51,12 +54,15 @@ fun rememberNavigationState(
  *
  * @param startRoute - the start route. The user will exit the app through this route.
  * @param topLevelRoute - the current top level route
- * @param backStacks - the back stacks for each top level route
+ * @param backStacks - the visible back stacks for each top level route
+ * @param savedStacks - hidden per-route stacks holding keys popped with saveState,
+ *   kept decorated so their state can be restored later
  */
 class NavigationState(
     val startRoute: NavKey,
     topLevelRoute: MutableState<NavKey>,
-    val backStacks: Map<NavKey, NavBackStack<NavKey>>
+    val backStacks: Map<NavKey, NavBackStack<NavKey>>,
+    val savedStacks: Map<NavKey, NavBackStack<NavKey>>
 ) {
     var topLevelRoute: NavKey by topLevelRoute
     val stacksInUse: List<NavKey>
@@ -75,16 +81,18 @@ fun NavigationState.toEntries(
     entryProvider: (NavKey) -> NavEntry<NavKey>
 ): SnapshotStateList<NavEntry<NavKey>> {
 
-    val decoratedEntries = backStacks.mapValues { (_, stack) ->
+    val decoratedEntries = backStacks.mapValues { (key, visible) ->
+        val saved = savedStacks[key] ?: emptyList()
         val decorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
             rememberViewModelStoreNavEntryDecorator(),
         )
+        val combined = saved + visible
         rememberDecoratedNavEntries(
-            backStack = stack,
+            backStack = combined,
             entryDecorators = decorators,
             entryProvider = entryProvider
-        )
+        ).takeLast(visible.size)
     }
 
     return stacksInUse

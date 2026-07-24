@@ -1,4 +1,4 @@
-package com.marchenaya.runique
+package com.marchenaya.runique.navigation
 
 import androidx.navigation3.runtime.NavKey
 
@@ -17,6 +17,7 @@ class Navigator(val state: NavigationState) {
         if (route in state.backStacks.keys) {
             if (popUpTo != null && popUpTo in state.backStacks.keys && inclusive) {
                 state.backStacks[popUpTo]?.clear()
+                state.savedStacks[popUpTo]?.clear()
             }
 
             val targetStack = state.backStacks[route]
@@ -27,6 +28,7 @@ class Navigator(val state: NavigationState) {
             state.topLevelRoute = route
         } else {
             val currentStack = state.backStacks[state.topLevelRoute]
+            val savedStack = state.savedStacks[state.topLevelRoute]
             if (currentStack != null) {
                 if (popUpTo != null) {
                     // Find the index of the route to pop up to
@@ -38,14 +40,21 @@ class Navigator(val state: NavigationState) {
                             currentStack.size - index - 1
                         }
                         repeat(popCount) {
-                            currentStack.removeLastOrNull()
+                            val removed = currentStack.removeLastOrNull()
+                            if (saveState && removed != null && savedStack != null &&
+                                removed !in savedStack
+                            ) {
+                                savedStack.add(removed)
+                            }
                         }
                     }
                 }
 
-                // Navigation 3 NavBackStack handles state saving/restoration for keys
-                // by default if using rememberNavBackStack and decorators.
-                // For simplicity in this migration, we add the new route.
+                // If the target was previously parked, un-park it: it stayed decorated,
+                // so re-adding the same key reuses its retained ViewModel/saveable state.
+                if (restoreState && savedStack != null && route in savedStack) {
+                    savedStack.remove(route)
+                }
                 currentStack.add(route)
             }
         }
