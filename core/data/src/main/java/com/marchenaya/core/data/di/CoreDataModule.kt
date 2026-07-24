@@ -31,5 +31,16 @@ val coreDataModule = module {
     singleOf(::AuthInfoSerializer)
     singleOf(::AuthInfoDataStore)
 
-    singleOf(::OfflineFirstRunRepository).bind<RunRepository>()
+    single<RunRepository> {
+        OfflineFirstRunRepository(
+            localRunDataSource = get(),
+            remoteRunDataSource = get(),
+            applicationScope = get(),
+            runPendingSyncDao = get(),
+            sessionStorage = get(),
+            dispatcherProvider = get(),
+            syncRunScheduler = get(),
+            client = get(named(HttpClientType.Authenticated))
+        )
+    }
 }

@@ -1,4 +1,4 @@
-package com.marchenaya.runique
+package com.marchenaya.runique.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

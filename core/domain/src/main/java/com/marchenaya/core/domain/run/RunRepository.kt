@@ -16,4 +16,8 @@ interface RunRepository {
 
     suspend fun syncPendingRuns()
 
+    suspend fun deleteAllRuns()
+
+    suspend fun logout(): EmptyResult<DataError.Network>
+
 }

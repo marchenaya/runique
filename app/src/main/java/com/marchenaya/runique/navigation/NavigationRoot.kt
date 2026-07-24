@@ -1,4 +1,4 @@
-package com.marchenaya.runique
+package com.marchenaya.runique.navigation
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
@@ -16,6 +16,7 @@ import com.marchenaya.core.domain.util.URL_ACTIVE_RUN
 import com.marchenaya.run.presentation.active_run.ActiveRunScreenRoot
 import com.marchenaya.run.presentation.active_run.service.ActiveRunService
 import com.marchenaya.run.presentation.run_overview.RunOverviewScreenRoot
+import com.marchenaya.runique.MainActivity
 
 private val deepLinks: Map<String, NavKey> = mapOf(
     URL_ACTIVE_RUN to Routes.ActiveRun
@@ -74,11 +75,7 @@ private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
                 )
             },
             onSuccessfulRegistration = {
-                navigator.navigate(
-                    route = Routes.Login,
-                    popUpTo = Routes.Register,
-                    inclusive = true
-                )
+                navigator.navigate(Routes.Login)
             }
         )
     }
@@ -113,6 +110,13 @@ private fun EntryProviderScope<NavKey>.runGraph(
             onStartRunClick = {
                 navigator.navigate(
                     Routes.ActiveRun
+                )
+            },
+            onLogoutClick = {
+                navigator.navigate(
+                    route = Routes.Intro,
+                    popUpTo = Routes.RunOverview,
+                    inclusive = true
                 )
             }
         )
