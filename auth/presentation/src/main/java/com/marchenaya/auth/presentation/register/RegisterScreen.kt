@@ -71,7 +71,13 @@ fun RegisterScreenRoot(
     RegisterScreen(
         state = viewModel.state,
         snackbarHostState = snackbar.hostState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                RegisterAction.OnLoginClick -> onSignInClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
