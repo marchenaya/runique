@@ -6,4 +6,6 @@ object Constants {
         "org.jetbrains.kotlin.plugin.compose"
     const val IMPLEMENTATION = "implementation"
     const val ANDROID_TEST_IMPLEMENTATION = "androidTestImplementation"
+    const val TEST_IMPLEMENTATION = "testImplementation"
+    const val TEST = "test"
 }

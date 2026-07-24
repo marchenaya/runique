@@ -5,6 +5,7 @@ plugins {
 
 android {
     namespace = "com.marchenaya.runique"
+    dynamicFeatures += setOf(":analytics:analytics-feature")
 }
 
 dependencies {
