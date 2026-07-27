@@ -36,6 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 fun RunOverviewScreenRoot(
     onStartRunClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onAnalyticsClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
     RunOverviewScreen(
@@ -43,6 +44,7 @@ fun RunOverviewScreenRoot(
         snackbarHostState = LocalSnackbar.current.hostState,
         onAction = { action -> //todo : see better way todo do that
             when (action) {
+                RunOverviewAction.OnAnalyticsClick -> onAnalyticsClick()
                 RunOverviewAction.OnStartClick -> onStartRunClick()
                 RunOverviewAction.OnLogoutCLick -> onLogoutClick()
                 else -> Unit
