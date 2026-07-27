@@ -13,4 +13,5 @@
     <string name="format_elevation_meters">%1$s m</string>
     <string name="format_pace_per_km">%1$s / km</string>
     <string name="format_no_value">-</string>
+    <string name="format_duration">%1$s:%2$s:%3$s</string>
 </resources>

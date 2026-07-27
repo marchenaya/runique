@@ -91,7 +91,7 @@ class ActiveRunService : Service() {
     private fun updateNotification() {
         runningTracker.elapsedTime.onEach { elapsedTime ->
             val notification = baseNotification
-                .setContentText(elapsedTime.formatted())
+                .setContentText(elapsedTime.formatted().asString(applicationContext))
                 .build()
 
             notificationManager?.notify(1, notification)
