@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.DynamicFeatureExtension
+import com.marchenaya.convention.Constants.ORG_JETBRAINS_KOTLIN_PLUGIN_COMPOSE
 import com.marchenaya.convention.Constants.TEST
 import com.marchenaya.convention.Constants.TEST_IMPLEMENTATION
 import com.marchenaya.convention.ExtensionType
@@ -19,6 +20,7 @@ class AndroidDynamicFeatureConventionPlugin : Plugin<Project> {
         target.run {
             pluginManager.run {
                 apply(ANDROID_DYNAMIC_FEATURE)
+                apply(ORG_JETBRAINS_KOTLIN_PLUGIN_COMPOSE)
             }
 
             extensions.configure<DynamicFeatureExtension> {
