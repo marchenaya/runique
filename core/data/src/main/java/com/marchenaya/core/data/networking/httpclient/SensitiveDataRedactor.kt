@@ -1,4 +1,4 @@
-package com.marchenaya.core.data.networking
+package com.marchenaya.core.data.networking.httpclient
 
 object SensitiveDataRedactor {
 

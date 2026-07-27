@@ -2,7 +2,7 @@ package com.marchenaya.auth.data
 
 import com.marchenaya.auth.domain.AuthRepository
 import com.marchenaya.core.data.networking.Endpoints
-import com.marchenaya.core.data.networking.post
+import com.marchenaya.core.data.networking.httpclient.post
 import com.marchenaya.core.domain.AuthInfo
 import com.marchenaya.core.domain.SessionStorage
 import com.marchenaya.core.domain.util.DataError

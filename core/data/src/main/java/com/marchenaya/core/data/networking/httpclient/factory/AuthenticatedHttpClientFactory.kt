@@ -1,6 +1,11 @@
-package com.marchenaya.core.data.networking
+package com.marchenaya.core.data.networking.httpclient.factory
 
 import com.marchenaya.core.data.BuildConfig
+import com.marchenaya.core.data.networking.AccessTokenRequest
+import com.marchenaya.core.data.networking.AccessTokenResponse
+import com.marchenaya.core.data.networking.Endpoints
+import com.marchenaya.core.data.networking.httpclient.applyDefaultConfiguration
+import com.marchenaya.core.data.networking.httpclient.post
 import com.marchenaya.core.domain.AuthInfo
 import com.marchenaya.core.domain.SessionStorage
 import com.marchenaya.core.domain.util.Result
@@ -9,14 +14,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.header
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.serialization.json.Json
 
 class AuthenticatedHttpClientFactory(
     private val sessionStorage: SessionStorage
@@ -24,18 +22,7 @@ class AuthenticatedHttpClientFactory(
 
     fun build(): HttpClient {
         return HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(
-                    json = Json {
-                        ignoreUnknownKeys = true
-                    }
-                )
-            }
-            installSecureLogging()
-            defaultRequest {
-                contentType(ContentType.Application.Json)
-                header("x-api-key", BuildConfig.API_KEY)
-            }
+            applyDefaultConfiguration(BuildConfig.API_KEY)
             install(Auth) {
                 bearer {
                     loadTokens {
