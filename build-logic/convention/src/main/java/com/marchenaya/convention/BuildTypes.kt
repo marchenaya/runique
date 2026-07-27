@@ -33,7 +33,7 @@ internal fun Project.configureBuildTypes(
             extensions.configure<ApplicationExtension> {
                 buildTypes {
                     debug {
-                        configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
+                        configureBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
                     }
                     release {
                         configureReleaseBuildType(
@@ -52,7 +52,7 @@ internal fun Project.configureBuildTypes(
             extensions.configure<LibraryExtension> {
                 buildTypes {
                     debug {
-                        configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
+                        configureBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
                     }
                     release {
                         configureReleaseBuildType(
@@ -71,16 +71,10 @@ internal fun Project.configureBuildTypes(
             extensions.configure<DynamicFeatureExtension> {
                 buildTypes {
                     debug {
-                        configureDebugBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
+                        configureBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
                     }
                     release {
-                        configureReleaseBuildType(
-                            defaultProguardFile = getDefaultProguardFile(
-                                PROGUARD_ANDROID_OPTIMIZE_TXT
-                            ),
-                            apiKey = apiKey,
-                            baseUrlValue = baseUrlValue
-                        )
+                        configureBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
                     }
                 }
             }
@@ -88,7 +82,10 @@ internal fun Project.configureBuildTypes(
     }
 }
 
-private fun BuildType.configureDebugBuildType(apiKey: String, baseUrlValue: String) {
+private fun BuildType.configureBuildType(
+    apiKey: String,
+    baseUrlValue: String
+) {
     buildConfigField(STRING, API_KEY, "\"$apiKey\"")
     buildConfigField(STRING, BASE_URL, "\"$baseUrlValue\"")
 }
@@ -98,8 +95,7 @@ private fun BuildType.configureReleaseBuildType(
     apiKey: String,
     baseUrlValue: String
 ) {
-    buildConfigField(STRING, API_KEY, "\"$apiKey\"")
-    buildConfigField(STRING, BASE_URL, "\"$baseUrlValue\"")
+    configureBuildType(apiKey = apiKey, baseUrlValue = baseUrlValue)
 
     isMinifyEnabled = true
     proguardFiles(
