@@ -1,7 +1,7 @@
 package com.marchenaya.core.data.run
 
 import com.marchenaya.core.data.networking.Endpoints.LOGOUT
-import com.marchenaya.core.data.networking.get
+import com.marchenaya.core.data.networking.httpclient.get
 import com.marchenaya.core.database.dao.RunPendingSyncDao
 import com.marchenaya.core.database.mapper.toRun
 import com.marchenaya.core.domain.SessionStorage

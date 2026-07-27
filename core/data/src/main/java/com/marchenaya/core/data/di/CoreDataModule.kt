@@ -3,9 +3,9 @@ package com.marchenaya.core.data.di
 import com.marchenaya.core.data.auth.AuthInfoDataStore
 import com.marchenaya.core.data.auth.AuthInfoSerializer
 import com.marchenaya.core.data.auth.DataStoreSessionStorage
-import com.marchenaya.core.data.networking.AuthenticatedHttpClientFactory
-import com.marchenaya.core.data.networking.HttpClientType
-import com.marchenaya.core.data.networking.ImageHttpClientFactory
+import com.marchenaya.core.data.networking.httpclient.HttpClientType
+import com.marchenaya.core.data.networking.httpclient.factory.AuthenticatedHttpClientFactory
+import com.marchenaya.core.data.networking.httpclient.factory.ImageHttpClientFactory
 import com.marchenaya.core.data.run.OfflineFirstRunRepository
 import com.marchenaya.core.data.util.DefaultDispatcherProvider
 import com.marchenaya.core.domain.SessionStorage

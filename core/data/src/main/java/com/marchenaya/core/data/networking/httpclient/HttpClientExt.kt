@@ -1,4 +1,4 @@
-package com.marchenaya.core.data.networking
+package com.marchenaya.core.data.networking.httpclient
 
 import com.marchenaya.core.data.BuildConfig
 import com.marchenaya.core.domain.util.DataError
