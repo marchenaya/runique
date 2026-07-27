@@ -107,6 +107,9 @@ private fun EntryProviderScope<NavKey>.runGraph(
 ) {
     entry<Routes.RunOverview> {
         RunOverviewScreenRoot(
+            onAnalyticsClick = {
+                onAnalyticsClick()
+            },
             onStartRunClick = {
                 navigator.navigate(
                     Routes.ActiveRun

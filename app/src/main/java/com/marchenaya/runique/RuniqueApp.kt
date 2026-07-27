@@ -1,7 +1,9 @@
 package com.marchenaya.runique
 
 import android.app.Application
+import android.content.Context
 import coil3.SingletonImageLoader
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.marchenaya.auth.data.di.authDataModule
 import com.marchenaya.auth.presentation.di.authViewModelModule
 import com.marchenaya.core.data.di.coreDataModule
@@ -51,4 +53,10 @@ class RuniqueApp : Application() {
 
         SingletonImageLoader.setSafe { get() }
     }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SplitCompat.install(this)
+    }
+
 }
