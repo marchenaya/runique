@@ -6,7 +6,7 @@ import com.marchenaya.auth.data.networking.UnauthenticatedHttpClientFactory
 import com.marchenaya.auth.domain.AuthRepository
 import com.marchenaya.auth.domain.PatternValidator
 import com.marchenaya.auth.domain.UserDataValidator
-import com.marchenaya.core.data.networking.HttpClientType
+import com.marchenaya.core.data.networking.httpclient.HttpClientType
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind

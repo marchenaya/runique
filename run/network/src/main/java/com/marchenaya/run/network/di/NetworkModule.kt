@@ -1,6 +1,6 @@
 package com.marchenaya.run.network.di
 
-import com.marchenaya.core.data.networking.HttpClientType
+import com.marchenaya.core.data.networking.httpclient.HttpClientType
 import com.marchenaya.core.domain.run.RemoteRunDataSource
 import com.marchenaya.run.network.KtorRemoteRunDataSource
 import org.koin.core.qualifier.named
