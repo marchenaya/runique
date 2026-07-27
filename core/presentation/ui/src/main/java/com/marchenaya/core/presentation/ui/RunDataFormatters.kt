@@ -6,13 +6,13 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 
-fun Duration.formatted(): String {
+fun Duration.formatted(): UiText {
     val totalSeconds = inWholeSeconds
     val hours = String.format(Locale.getDefault(), "%02d", totalSeconds / 3600)
     val minutes = String.format(Locale.getDefault(), "%02d", (totalSeconds % 3600) / 60)
     val seconds = String.format(Locale.getDefault(), "%02d", totalSeconds % 60)
 
-    return "$hours:$minutes:$seconds"
+    return UiText.StringResource(R.string.format_duration, hours, minutes, seconds)
 }
 
 fun Double.toFormattedKm(): UiText {
