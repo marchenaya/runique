@@ -1,9 +1,11 @@
 package com.marchenaya.analytics.presentation
 
+import com.marchenaya.core.presentation.ui.UiText
+
 data class AnalyticsDashboardState(
-    val totalDistanceRun: String,
-    val totalTimeRun: String,
-    val fastestEverRun: String,
-    val averageDistance: String,
-    val averagePace: String
+    val totalDistanceRun: UiText,
+    val totalTimeRun: UiText,
+    val fastestEverRun: UiText,
+    val averageDistance: UiText,
+    val averagePace: UiText
 )

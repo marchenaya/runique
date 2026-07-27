@@ -21,6 +21,7 @@ import com.marchenaya.analytics.presentation.components.AnalyticsCard
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 import com.marchenaya.core.presentation.designsystem.components.RuniqueScaffold
 import com.marchenaya.core.presentation.designsystem.components.RuniqueToolbar
+import com.marchenaya.core.presentation.ui.UiText
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -79,13 +80,13 @@ fun AnalyticsDashboardScreen(
                 ) {
                     AnalyticsCard(
                         title = stringResource(id = R.string.total_distance_run),
-                        value = state.totalDistanceRun,
+                        value = state.totalDistanceRun.asString(),
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     AnalyticsCard(
                         title = stringResource(id = R.string.total_time_run),
-                        value = state.totalTimeRun,
+                        value = state.totalTimeRun.asString(),
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -96,13 +97,13 @@ fun AnalyticsDashboardScreen(
                 ) {
                     AnalyticsCard(
                         title = stringResource(id = R.string.fastest_ever_run),
-                        value = state.fastestEverRun,
+                        value = state.fastestEverRun.asString(),
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     AnalyticsCard(
                         title = stringResource(id = R.string.average_distance_per_run),
-                        value = state.averageDistance,
+                        value = state.averageDistance.asString(),
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -113,7 +114,7 @@ fun AnalyticsDashboardScreen(
                 ) {
                     AnalyticsCard(
                         title = stringResource(id = R.string.average_pace_per_run),
-                        value = state.averagePace,
+                        value = state.averagePace.asString(),
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -128,11 +129,11 @@ private fun AnalyticsDashboardScreenPreview() {
     RuniqueTheme {
         AnalyticsDashboardScreen(
             state = AnalyticsDashboardState(
-                totalDistanceRun = "0.2 km",
-                totalTimeRun = "0d 0h 0m",
-                fastestEverRun = "143.9 km/h",
-                averageDistance = "0.1 km",
-                averagePace = "07:10",
+                totalDistanceRun = UiText.DynamicString("0.2 km"),
+                totalTimeRun = UiText.DynamicString("0d 0h 0m"),
+                fastestEverRun = UiText.DynamicString("143.9 km/h"),
+                averageDistance = UiText.DynamicString("0.1 km"),
+                averagePace = UiText.DynamicString("07:10"),
             ),
             onAction = {}
         )
