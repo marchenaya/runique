@@ -45,7 +45,7 @@ fun RunDataCard(
     ) {
         RunDataItem(
             title = stringResource(id = R.string.duration),
-            value = elapsedTime.formatted(),
+            value = elapsedTime.formatted().asString(),
             valueFontSize = 32.sp
         )
         Spacer(Modifier.height(24.dp))

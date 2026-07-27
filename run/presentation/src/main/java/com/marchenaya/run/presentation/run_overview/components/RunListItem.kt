@@ -80,7 +80,7 @@ fun RunListItem(
         ) {
             MapImage(imageUrl = runUi.mapPictureUrl)
             RunningTimeSection(
-                duration = runUi.duration,
+                duration = runUi.duration.asString(),
                 modifier = Modifier.fillMaxWidth()
             )
             HorizontalDivider(
