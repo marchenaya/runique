@@ -2,7 +2,7 @@ package com.marchenaya.runique.di
 
 import coil3.ImageLoader
 import coil3.network.ktor3.KtorNetworkFetcherFactory
-import com.marchenaya.core.data.networking.HttpClientType
+import com.marchenaya.core.data.networking.httpclient.HttpClientType
 import io.ktor.client.HttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named

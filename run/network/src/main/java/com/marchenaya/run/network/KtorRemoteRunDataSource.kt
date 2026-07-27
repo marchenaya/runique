@@ -3,10 +3,10 @@ package com.marchenaya.run.network
 import com.marchenaya.core.data.networking.Endpoints.DELETE_RUN
 import com.marchenaya.core.data.networking.Endpoints.GET_RUNS
 import com.marchenaya.core.data.networking.Endpoints.POST_RUN
-import com.marchenaya.core.data.networking.constructRoute
-import com.marchenaya.core.data.networking.delete
-import com.marchenaya.core.data.networking.get
-import com.marchenaya.core.data.networking.safeCall
+import com.marchenaya.core.data.networking.httpclient.constructRoute
+import com.marchenaya.core.data.networking.httpclient.delete
+import com.marchenaya.core.data.networking.httpclient.get
+import com.marchenaya.core.data.networking.httpclient.safeCall
 import com.marchenaya.core.domain.run.RemoteRunDataSource
 import com.marchenaya.core.domain.run.Run
 import com.marchenaya.core.domain.util.DataError
