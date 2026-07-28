@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Runique</string>
     <string name="title_analytics_feature">Analytics</string>
-    <string name="error_couldnt_load_module">Couldn\'t load module</string>
-    <string name="error_installation_failed">Unfortunately, the installation failed. Please try again later.</string>
-    <string name="analytics_installed">The analytics feature was installed. Feel free to use it now.</string>
-    <string name="installing_module">Installing module</string>
+    <string name="dynamic_status_requesting">Requesting…</string>
+    <string name="dynamic_status_downloading">Downloading…</string>
+    <string name="dynamic_status_installing">Installing…</string>
+    <string name="dynamic_status_requires_confirmation">Confirmation required</string>
+    <string name="dynamic_status_failed">Installation failed</string>
+    <string name="dynamic_confirm_download">Confirm</string>
+    <string name="dynamic_cancel">Cancel</string>
+    <string name="dynamic_error_code">Error code: %1$d</string>
+    <string name="dynamic_downloading_progress">Downloading: %1$s</string>
+    <string name="format_percentage">%1$d%</string>
 </resources>
