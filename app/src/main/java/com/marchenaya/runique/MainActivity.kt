@@ -2,31 +2,16 @@ package com.marchenaya.runique
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
@@ -34,10 +19,11 @@ import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
-import com.marchenaya.core.presentation.ui.snackbar.SnackbarProvider
-import com.marchenaya.runique.navigation.NavigationRoot
+import com.marchenaya.runique.components.RuniqueRoot
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+//Figma : https://www.figma.com/design/NNSWHCD7WMpzks7xfKp35c/Runique-Course?node-id=0-1&p=f
+//todo make todos and check homeworks use to test dynamic feature : https://developer.android.com/guide/navigation/navigation-3/recipes/dynamicfeature#how-to-test-locally
 class MainActivity : ComponentActivity() {
 
     private lateinit var splitInstallManager: SplitInstallManager
@@ -46,20 +32,15 @@ class MainActivity : ComponentActivity() {
             when (state.status()) {
 
                 SplitInstallSessionStatus.INSTALLED -> {
-                    viewModel.setAnalyticsDialogVisibility(false)
-                    Toast.makeText(//todo
-                        applicationContext,
-                        R.string.analytics_installed,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    viewModel.onAction(MainAction.OnAnalyticsFeatureInstalled)
                 }
 
                 SplitInstallSessionStatus.INSTALLING -> {
-                    viewModel.setAnalyticsDialogVisibility(true)
+                    viewModel.onAction(MainAction.OnAnalyticsFeatureLoading)
                 }
 
                 SplitInstallSessionStatus.DOWNLOADING -> {
-                    viewModel.setAnalyticsDialogVisibility(true)
+                    viewModel.onAction(MainAction.OnAnalyticsFeatureLoading)
                 }
 
                 SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
@@ -67,12 +48,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 SplitInstallSessionStatus.FAILED -> {
-                    viewModel.setAnalyticsDialogVisibility(false)
-                    Toast.makeText(//todo
-                        applicationContext,
-                        R.string.error_installation_failed,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    viewModel.onAction(MainAction.OnAnalyticsFeatureInstallFailed)
                 }
 
                 else -> Unit
@@ -100,36 +76,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     if (!viewModel.state.isCheckingAuth) {
-                        SnackbarProvider {
-                            NavigationRoot(
-                                isLoggedIn = viewModel.state.isLoggedIn,
-                                deepLinkUri = currentIntent?.data,
-                                onDeepLinkHandled = { currentIntent = null },
-                                onAnalyticsClick = {
-                                    installOrStartAnalyticsFeature()
-                                }
-                            )
-
-                            if (viewModel.state.showAnalyticsInstallDialog) {
-                                Dialog(onDismissRequest = {}) {
-                                    Column(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(15.dp))
-                                            .background(MaterialTheme.colorScheme.surface)
-                                            .padding(16.dp),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        CircularProgressIndicator()
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        Text(
-                                            text = stringResource(id = R.string.installing_module),
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        RuniqueRoot(
+                            state = viewModel.state,
+                            events = viewModel.events,
+                            deepLinkUri = currentIntent?.data,
+                            onDeepLinkHandled = { currentIntent = null },
+                            onAnalyticsClick = ::installOrStartAnalyticsFeature
+                        )
                     }
                 }
             }
@@ -147,28 +100,24 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun installOrStartAnalyticsFeature() {
-        if (splitInstallManager.installedModules.contains("analytics_feature")) { //todo : strings to const
+        if (splitInstallManager.installedModules.contains(ANALYTICS_FEATURE)) {
             Intent()
                 .setClassName(
                     packageName,
-                    "com.marchenaya.analytics.analytics_feature.AnalyticsActivity"
+                    ANALYTICS_ACTIVITY_CLASS
                 )
                 .also(::startActivity)
             return
         }
 
         val request = SplitInstallRequest.newBuilder()
-            .addModule("analytics_feature")
+            .addModule(ANALYTICS_FEATURE)
             .build()
         splitInstallManager
             .startInstall(request)
             .addOnFailureListener {
                 it.printStackTrace()
-                Toast.makeText( //todo: replace by snackbar
-                    applicationContext,
-                    R.string.error_couldnt_load_module,
-                    Toast.LENGTH_LONG
-                ).show()
+                viewModel.onAction(MainAction.OnAnalyticsFeatureLoadFailed)
             }
     }
 
@@ -177,4 +126,11 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         currentIntent = intent
     }
+
+    private companion object {
+        private const val ANALYTICS_FEATURE = "analytics_feature"
+        private const val ANALYTICS_ACTIVITY_CLASS =
+            "com.marchenaya.analytics.analytics_feature.AnalyticsActivity"
+    }
+
 }
