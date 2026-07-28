@@ -22,7 +22,6 @@ import com.marchenaya.core.presentation.designsystem.RuniqueTheme
 import com.marchenaya.runique.components.RuniqueRoot
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//Figma : https://www.figma.com/design/NNSWHCD7WMpzks7xfKp35c/Runique-Course?node-id=0-1&p=f
 //todo make todos and check homeworks use to test dynamic feature : https://developer.android.com/guide/navigation/navigation-3/recipes/dynamicfeature#how-to-test-locally
 class MainActivity : ComponentActivity() {
 
