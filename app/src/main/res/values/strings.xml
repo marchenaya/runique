@@ -10,5 +10,5 @@
     <string name="dynamic_cancel">Cancel</string>
     <string name="dynamic_error_code">Error code: %1$d</string>
     <string name="dynamic_downloading_progress">Downloading: %1$s</string>
-    <string name="format_percentage">%1$d%</string>
+    <string name="format_percentage">%1$d%%</string>
 </resources>
