@@ -17,23 +17,31 @@ import com.marchenaya.run.presentation.active_run.ActiveRunScreenRoot
 import com.marchenaya.run.presentation.active_run.service.ActiveRunService
 import com.marchenaya.run.presentation.run_overview.RunOverviewScreenRoot
 import com.marchenaya.runique.MainActivity
+import com.marchenaya.runique.components.DynamicFeatureDownloadProgressDialog
+import com.marchenaya.runique.navigation.dynamicfeature.AnalyticsModule
+import com.marchenaya.runique.navigation.dynamicfeature.DynamicModule
+import com.marchenaya.runique.navigation.dynamicfeature.buildDynamicEntries
+import com.marchenaya.runique.navigation.dynamicfeature.retainDynamicFeatureManager
 
 private val deepLinks: Map<String, NavKey> = mapOf(
     URL_ACTIVE_RUN to Routes.ActiveRun
 )
 
+private val ALL_DYNAMIC_MODULES: Map<String, DynamicModule> =
+    listOf(AnalyticsModule).associateBy { it.moduleName }
+
 @Composable
 fun NavigationRoot(
     isLoggedIn: Boolean,
     deepLinkUri: Uri?,
-    onDeepLinkHandled: () -> Unit,
-    onAnalyticsClick: () -> Unit
+    onDeepLinkHandled: () -> Unit
 ) {
     val navigationState = rememberNavigationState(
         startRoute = if (isLoggedIn) Routes.RunOverview else Routes.Intro,
         topLevelRoutes = setOf(Routes.Intro, Routes.RunOverview)
     )
     val navigator = remember { Navigator(navigationState) }
+    val dynamicFeatureManager = retainDynamicFeatureManager()
 
     LaunchedEffect(deepLinkUri) {
         val route = deepLinkUri?.let { deepLinks[it.toString()] } ?: return@LaunchedEffect
@@ -41,15 +49,25 @@ fun NavigationRoot(
         onDeepLinkHandled()
     }
 
+    val onAnalyticsClick: () -> Unit = {
+        dynamicFeatureManager.installModule(AnalyticsModule.moduleName) {
+            navigator.navigate(AnalyticsModule.Dashboard)
+        }
+    }
+
     val entryProvider = entryProvider {
         authGraph(navigator)
         runGraph(navigator, onAnalyticsClick)
+        dynamicFeatureManager.installedModules
+            .mapNotNull { ALL_DYNAMIC_MODULES[it] }
+            .forEach { buildDynamicEntries(it, onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(
         entries = navigationState.toEntries(entryProvider),
         onBack = { navigator.goBack() }
     )
+    DynamicFeatureDownloadProgressDialog(dynamicFeatureManager)
 }
 
 private fun EntryProviderScope<NavKey>.authGraph(navigator: Navigator) {
@@ -107,6 +125,9 @@ private fun EntryProviderScope<NavKey>.runGraph(
 ) {
     entry<Routes.RunOverview> {
         RunOverviewScreenRoot(
+            onAnalyticsClick = {
+                onAnalyticsClick()
+            },
             onStartRunClick = {
                 navigator.navigate(
                     Routes.ActiveRun

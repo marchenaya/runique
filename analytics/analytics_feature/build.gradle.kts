@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":app"))
 
     api(projects.analytics.presentation)
+    implementation(libs.androidx.navigation3.runtime)
     implementation(projects.analytics.domain)
     implementation(projects.analytics.data)
     implementation(projects.core.database)

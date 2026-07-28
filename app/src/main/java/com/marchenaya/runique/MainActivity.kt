@@ -14,8 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.marchenaya.core.presentation.designsystem.RuniqueTheme
-import com.marchenaya.core.presentation.ui.snackbar.SnackbarProvider
-import com.marchenaya.runique.navigation.NavigationRoot
+import com.marchenaya.runique.components.RuniqueRoot
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -40,14 +39,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     if (!viewModel.state.isCheckingAuth) {
-                        SnackbarProvider {
-                            NavigationRoot(
-                                isLoggedIn = viewModel.state.isLoggedIn,
-                                deepLinkUri = currentIntent?.data,
-                                onDeepLinkHandled = { currentIntent = null },
-                                onAnalyticsClick = {}
-                            )
-                        }
+                        RuniqueRoot(
+                            state = viewModel.state,
+                            deepLinkUri = currentIntent?.data,
+                            onDeepLinkHandled = { currentIntent = null }
+                        )
                     }
                 }
             }

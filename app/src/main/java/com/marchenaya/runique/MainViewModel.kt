@@ -25,5 +25,4 @@ class MainViewModel(
             state = state.copy(isCheckingAuth = false)
         }
     }
-
 }
