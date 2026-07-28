@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 object AnalyticsModule : DynamicModule(
-    entryBuilderClassName = "com.marchenaya.analytics.analytics_feature.AnalyticsEntryBuilder",
+    entryBuilderClassName = "com.marchenaya.analytics.analytics_feature.AnalyticsModuleEntryBuilder",
     moduleName = "analytics_feature"
 ) {
     @Serializable
